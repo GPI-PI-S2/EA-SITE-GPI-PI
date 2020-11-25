@@ -8,6 +8,7 @@ import { Component, Vue } from 'vue-property-decorator';
 	components: { gpiButton, InputC, SelectC, SendButton },
 })
 export default class SettingsPage extends Vue {
+	value=0;
 	items = [
 		{
 			title: 'YouTube',

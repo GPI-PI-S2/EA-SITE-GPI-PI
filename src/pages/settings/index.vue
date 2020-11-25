@@ -21,12 +21,26 @@
 							<div class="icon col-1">
 								<q-icon size="md" :name="input.icon" />
 							</div>
-							<div class="col-10">
+							<div v-if="extractor.title != 'General'" class="col-10">
 								<InputC
 									:dense="true"
 									class="inputClass col-10"
 									:label="input.label"
 								/>
+							</div>
+							<div v-else-if="extractor.title == 'General'" class="col-10">
+								<div class="q-pa-md">
+									<q-slider
+										v-model="value"
+										:min="0"
+										:max="1000"
+										:step="4"
+										label
+										:label-value="'Comentarios: ' + value + ''"
+										label-always
+										color="primary"
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -58,7 +72,7 @@
 							<InputC class="inputClass" :dense="true" label="Numero" />
 						</div>
 					</div>
-					<div v-for="(select, index) in telegram.items" :key="index">
+					<!-- <div v-for="(select, index) in telegram.items" :key="index">
 						<div class="row">
 							<div class="icon col-2">
 								<q-icon size="xs" :name="select.icon" />
@@ -67,7 +81,7 @@
 								<InputC class="inputClass" :dense="true" :label="select.title" />
 							</div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div style="margin-top:10px" class="row col-grow justify-center">
