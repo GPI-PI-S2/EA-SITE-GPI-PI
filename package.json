@@ -13,8 +13,9 @@
 	"dependencies": {
 		"@quasar/extras": "^1.0.0",
 		"core-js": "^3.6.5",
+		"cross-env": "^7.0.2",
 		"directory-named-webpack-plugin": "^4.0.1",
-		"quasar": "^1.0.0",
+		"quasar": "^1.14.3",
 		"vue-class-component": "^7.2.2",
 		"vue-property-decorator": "^8.3.0"
 	},

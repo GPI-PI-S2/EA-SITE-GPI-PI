@@ -7,6 +7,7 @@ export default class MainLayout extends Vue {
 		{ name: 'Home', icon: 'mdi-home', to: { name: 'home' } },
 		{ name: 'Ajustes', icon: 'mdi-cog', to: { name: 'settings' } },
 		{ name: 'Sobre la app', icon: 'mdi-information', to: { name: 'about' } },
+		{ name: 'Stats', icon: 'mdi-state-machine', to: {name: 'stats'}},
 	]);
 }
 export namespace MainLayout {

@@ -7,11 +7,7 @@
 				:style="{ width: '1200px', maxWidth: '1200px', minHeight: '600px' }"
 			>
 				<div class="row full-height">
-					<q-list
-						separator
-						class="col-shrink"
-						:style="{ width: $q.screen.lt.md ? '50px' : '200px' }"
-					>
+					<q-list separator class="col-2">
 						<q-item
 							clickable
 							v-ripple
@@ -35,7 +31,9 @@
 						</q-item>
 					</q-list>
 					<q-separator vertical />
-					<router-view />
+					<div class="col-grow row">
+						<router-view />
+					</div>
 				</div>
 			</q-card>
 		</q-page-container>
