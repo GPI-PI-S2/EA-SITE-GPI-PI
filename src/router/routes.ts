@@ -8,6 +8,7 @@ const routes: RouteConfig[] = [
 			{ path: 'home', name: 'home', component: () => import('pages/home') },
 			{ path: 'settings', name: 'settings', component: () => import('pages/settings') },
 			{ path: 'about', name: 'about', component: () => import('pages/about') },
+			{ path: 'stats', name: 'stats', component: () => import('pages/stats')},
 		],
 	},
 
