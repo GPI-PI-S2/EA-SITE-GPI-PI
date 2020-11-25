@@ -9,19 +9,23 @@ import routes from './routes';
  * directly export the Router instantiation
  */
 
-export default route<Store<StateInterface>>(function ({ Vue }) {
-  Vue.use(VueRouter);
+export default route<Store<StateInterface>>(function({ Vue }) {
+	Vue.use(VueRouter);
 
-  const Router = new VueRouter({
-    scrollBehavior: () => ({ x: 0, y: 0 }),
-    routes,
+	const Router = new VueRouter({
+		scrollBehavior: () => ({ x: 0, y: 0 }),
+		routes,
 
-    // Leave these as is and change from quasar.conf.js instead!
-    // quasar.conf.js -> build -> vueRouterMode
-    // quasar.conf.js -> build -> publicPath
-    mode: process.env.VUE_ROUTER_MODE,
-    base: process.env.VUE_ROUTER_BASE
-  });
-
-  return Router;
-})
+		// Leave these as is and change from quasar.conf.js instead!
+		// quasar.conf.js -> build -> vueRouterMode
+		// quasar.conf.js -> build -> publicPath
+		mode: process.env.VUE_ROUTER_MODE,
+		base: process.env.VUE_ROUTER_BASE,
+	});
+	Router.beforeEach((to, from, next) => {
+		console.log({ to, from });
+		if (to.path === '/') return next({ name: 'extractors' });
+		else return next();
+	});
+	return Router;
+});

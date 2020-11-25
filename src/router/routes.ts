@@ -5,10 +5,14 @@ const routes: RouteConfig[] = [
 		path: '/',
 		component: () => import('layouts/main'),
 		children: [
-			{ path: 'home', name: 'home', component: () => import('pages/home') },
+			{
+				path: 'extractors',
+				name: 'extractors',
+				component: () => import('src/pages/extractors'),
+			},
 			{ path: 'settings', name: 'settings', component: () => import('pages/settings') },
 			{ path: 'about', name: 'about', component: () => import('pages/about') },
-			{ path: 'stats', name: 'stats', component: () => import('pages/stats')},
+			{ path: 'stats', name: 'stats', component: () => import('pages/stats') },
 		],
 	},
 

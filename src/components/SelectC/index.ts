@@ -1,18 +1,16 @@
-import { StateInterface } from 'src/store';
-import { Component, Model, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class SelectC extends Vue {
-    @Prop({})
-    label!:string
-    @Prop({default:[]})
-    options!: [];
-    model = null;
-    @Prop({default: false})
-    dense!:boolean;
-    @Prop({default: false})
-    denseOpts!:boolean;
-    emmitModel(){
-        this.$emit('selectModel', this.model);
-    }
+	@Prop({})
+	label!: string;
+	@Prop({ default: [] })
+	options!: [];
+	model = null;
+	@Prop({ default: false })
+	dense!: boolean;
+	@Prop({ default: false })
+	denseOpts!: boolean;
+	emmitModel() {
+		this.$emit('selectModel', this.model);
+	}
 }
-
