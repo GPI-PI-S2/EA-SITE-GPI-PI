@@ -60,7 +60,7 @@
 						<div class="icon col-1">
 							<q-icon size="md" name="mdi-cellphone" />
 						</div>
-						<div class="col-3">
+						<div class="col-2">
 							<SelectC
 								class="inputClass"
 								:dense="true"
@@ -68,8 +68,18 @@
 								:denseOpts="true"
 							/>
 						</div>
-						<div class="col-7">
+						<div class="col-5">
 							<InputC class="inputClass" :dense="true" label="Numero" />
+						</div>
+						<div class="col-4 q-pa-xs">
+							<q-btn
+								align="around"
+								class="btn-fixed-width"
+								size="md"
+								color="primary"
+								label="Guardar"
+								icon="mdi-content-save"
+							/>
 						</div>
 					</div>
 					<!-- <div v-for="(select, index) in telegram.items" :key="index">
@@ -84,16 +94,9 @@
 					</div> -->
 				</div>
 			</div>
-			<div style="margin-top:10px" class="row col-grow justify-center">
-				<q-btn
-					align="around"
-					style="padding:3px, margin-top:10px"
-					class="btn-fixed-width"
-					color="primary"
-					label="Guardar"
-					icon="mdi-content-save"
-				/>
-			</div>
+			<!-- <div style="margin-top:10px" class="row col-grow justify-center"> -->
+
+			<!-- </div> -->
 		</div>
 	</div>
 	<!-- <div class="q-pa-lg col-grow">

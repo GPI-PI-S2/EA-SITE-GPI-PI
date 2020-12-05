@@ -2,8 +2,10 @@ import { timeout } from 'ea-common-gpi-pi';
 import { QSpinnerGears } from 'quasar';
 import { Component, Vue } from 'vue-property-decorator';
 import InputC from 'src/components/InputC'
+import ChartC from 'src/components/chart'
+
 @Component({
-	components: { InputC},
+	components: { ChartC,InputC},
 })
 export default class ExtractorsPage extends Vue {
 	showTelegramDialog = false;
@@ -13,6 +15,22 @@ export default class ExtractorsPage extends Vue {
 	alert = true;
 	registered = false;
 	urlYoutube!:string;
+	PromedioFactor: ExtractorsPage.Indicator []= [{
+		title: 'Promedio 1',
+		subtitle: 'about promedio1',
+		value: 1234
+	},{
+		title: 'Promedio 2',
+		subtitle: 'about promedio2',
+		value: 4321
+	}]
+	dataChart:ExtractorsPage.DataChart = {
+		labels: [],
+		datasets: [{
+			label: '',
+			data: []
+		}]
+	}
 	chats: ExtractorsPage.Chat[] = [
 		{
 			id:1,
@@ -126,6 +144,7 @@ export default class ExtractorsPage extends Vue {
 				spinner: (QSpinnerGears as unknown) as Vue,
 				message: 'Cargando los resultados...',
 			});
+			this.getChartInfo()
 			await timeout(2000);
 			dismiss();
 			this.step = 2;
@@ -141,6 +160,7 @@ export default class ExtractorsPage extends Vue {
 				spinner: (QSpinnerGears as unknown) as Vue,
 				message: 'Cargando los resultados...',
 			});
+			this.getChartInfo()
 			await timeout(2000);
 			dismiss();
 			this.step = 2;
@@ -156,6 +176,7 @@ export default class ExtractorsPage extends Vue {
 				spinner: (QSpinnerGears as unknown) as Vue,
 				message: 'Cargando los resultados...',
 			});
+			this.getChartInfo()
 			await timeout(2000);
 			dismiss();
 			this.step = 2;
@@ -171,6 +192,7 @@ export default class ExtractorsPage extends Vue {
 				spinner: (QSpinnerGears as unknown) as Vue,
 				message: 'Cargando los resultados...',
 			});
+			this.getChartInfo()
 			await timeout(2000);
 			dismiss();
 			this.step = 2;
@@ -186,12 +208,32 @@ export default class ExtractorsPage extends Vue {
 				spinner: (QSpinnerGears as unknown) as Vue,
 				message: 'Cargando los resultados...',
 			});
+			this.getChartInfo()
 			await timeout(2000);
 			dismiss();
 			this.step = 2;
 		}
 		catch (error){
 			console.error(error)
+		}
+	}
+	getRandomNumber(){
+		return Math.floor(Math.random()*15)+1
+	}
+	getChartInfo(){
+		this.dataChart = {
+			labels: ['Asertividad','Autoconsciencia emocional', 'Autoestima', 
+			'Colaboración y cooperación','Comprensión organizativa','Consciencia crítica', 
+			'Desarrollo de las relaciones', 'Empatía','Influencia',
+			'Liderazgo','Manejo de conflictos','Motivación de logro','Optimismo','Percepción y comprensión Emocional',
+			'Relación social','Tolerancia a la frustración', 'Violencia'],
+			datasets: [{
+				label: 'Factores emocionales de maguna',
+				data: []
+			}]
+		}
+		for(let e=0; e<=17;e++){
+			this.dataChart.datasets[0].data.push(this.getRandomNumber())
 		}
 	}
 }
@@ -210,5 +252,18 @@ export namespace ExtractorsPage {
 		comments: number;
 		name: string;
 		icon: string;
+	}
+	export interface Factors{
+		label: string;
+		data: number[];
+	}
+	export interface DataChart{
+		labels: string [];
+		datasets: ExtractorsPage.Factors[];
+	}
+	export interface Indicator{
+		title: string
+		subtitle: string
+		value: number
 	}
 }

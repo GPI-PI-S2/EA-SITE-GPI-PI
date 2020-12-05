@@ -23,10 +23,8 @@ export default class SettingsPage extends Vue {
 		{
 			title: 'General',
 			icon: 'mdi-cog',
-			content: [{ label: 'Limite de comentarios', icon: 'mdi-key-variant' }],
+			content: [{ label: 'Limite de comentarios', icon: 'mdi-comment' }],
 		},
-		// {title: 'Reddit',icon:'mdi-reddit', content:[{label:'Apikey',icon:'mdi-key-variant'}]},
-		// {title: 'Emol', icon:'mdi-newspaper', content: [{label:'Apikey',icon:'mdi-key-variant'}]},
 	];
 	telegram = {
 		title: 'Telegram',
@@ -35,5 +33,4 @@ export default class SettingsPage extends Vue {
 	};
 	options = ['+56'];
 }
-
 // id nombre tipo de chat
