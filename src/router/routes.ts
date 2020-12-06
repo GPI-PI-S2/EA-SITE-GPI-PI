@@ -13,9 +13,9 @@ const routes: RouteConfig[] = [
 			{ path: 'settings', name: 'settings', component: () => import('pages/settings') },
 			{ path: 'about', name: 'about', component: () => import('pages/about') },
 			{ path: 'stats', name: 'stats', component: () => import('pages/stats') },
+			{ path: 'https://github.com/GPI-PI-S2/EA-SITE-GPI-PI', name: 'site-gpi-pi'}
 		],
 	},
-
 	// Always leave this as last one,
 	// but you can also remove it
 	{

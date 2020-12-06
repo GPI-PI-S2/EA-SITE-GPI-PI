@@ -1,3 +1,4 @@
+/* eslint-disable vue/valid-v-else */
 <template>
 	<div class="q-pa-lg row">
 		<div class="col-12 q-pb-md">
@@ -16,10 +17,96 @@
 			>
 				<div class="q-pl-xl q-pa-md">
 					{{ each.cardContent }}
+					<div v-show="index == 1" class="integrantes">
+						<div v-for="(team, index) in IntegrantesList" :key="index" class="row">
+							<h5 class="col-12">{{ team.name }}</h5>
+							<div class="row col-grow">
+								<div class="row">
+									<div
+										v-for="(integrantes, subIndex) in team.integrantes"
+										:key="subIndex"
+										class="col-12 col-md-4 details"
+									>
+										<q-card class="card">
+											<q-item>
+												<q-item-section avatar>
+													<q-avatar>
+														<img :src="integrantes.img" />
+													</q-avatar>
+												</q-item-section>
+												<q-item-section>
+													<q-item-label>{{
+														integrantes.name
+													}}</q-item-label>
+													<q-item-label v-if="index == 0" caption
+														>{{ integrantes.extra }}
+														{{ integrantes.email }}</q-item-label
+													>
+													<q-item-label v-else caption>{{
+														integrantes.email
+													}}</q-item-label>
+												</q-item-section>
+											</q-item>
+										</q-card>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div v-show="index == 2" class="about">
+						<div class="row">
+							<h5>Repositorios de la aplicación</h5>
+						</div>
+						<div class="row flex flex-center">
+							<img
+								class="arqui-tabla "
+								src="..\..\..\public\images\arqui-tabla.png"
+								alt=""
+							/>
+						</div>
+						<div class="row">
+							<div class="col-5 column">
+								<h5>Links de repositorios</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="q-pa-xs column q-gutter-sm">
+								<a
+									v-for="(route, index) in githubRoutes"
+									:key="index"
+									:href="route.href"
+								>
+									<q-btn
+										style="width:400px"
+										color="primary"
+										:outline="true"
+										no-caps
+										stretch
+										:label="route.label"
+									/>
+								</a>
+							</div>
+						</div>
+					</div>
 				</div>
 			</q-expansion-item>
 		</q-list>
 	</div>
 </template>
 <script src="./index.ts" lang="ts" />
-<style scoped></style>
+<style scoped>
+.arqui-tabla {
+	width: max-width;
+	height: 350px;
+}
+h5 {
+	margin: 15px;
+}
+a {
+	text-decoration: none;
+}
+.card {
+	padding: 4px;
+	margin: 5px;
+}
+</style>
