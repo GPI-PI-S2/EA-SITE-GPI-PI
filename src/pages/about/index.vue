@@ -25,26 +25,32 @@
 									<div
 										v-for="(integrantes, subIndex) in team.integrantes"
 										:key="subIndex"
-										class="col-12 col-md-4 details"
+										class="col-12 col-md-4 "
 									>
-										<q-card class="card">
+										<q-card class="cardAbout">
 											<q-item>
 												<q-item-section avatar>
 													<q-avatar>
 														<img :src="integrantes.img" />
 													</q-avatar>
 												</q-item-section>
-												<q-item-section>
+												<q-item-section class="row">
 													<q-item-label>{{
 														integrantes.name
 													}}</q-item-label>
-													<q-item-label v-if="index == 0" caption
-														>{{ integrantes.extra }}
-														{{ integrantes.email }}</q-item-label
-													>
-													<q-item-label v-else caption>{{
-														integrantes.email
-													}}</q-item-label>
+													<div v-if="index == 0" :key="index">
+														<q-item-label caption>{{
+															integrantes.extra
+														}}</q-item-label>
+														<q-item-label caption>{{
+															integrantes.email
+														}}</q-item-label>
+													</div>
+													<div v-else>
+														<q-item-label caption>{{
+															integrantes.email
+														}}</q-item-label>
+													</div>
 												</q-item-section>
 											</q-item>
 										</q-card>
@@ -57,15 +63,15 @@
 						<div class="row">
 							<h5>Repositorios de la aplicación</h5>
 						</div>
-						<div class="row flex flex-center">
+						<div class="row ">
 							<img
-								class="arqui-tabla "
+								class="col-12 col-md"
 								src="..\..\..\public\images\arqui-tabla.png"
 								alt=""
 							/>
 						</div>
 						<div class="row">
-							<div class="col-5 column">
+							<div class="col-12 col-md">
 								<h5>Links de repositorios</h5>
 							</div>
 						</div>
@@ -95,17 +101,13 @@
 </template>
 <script src="./index.ts" lang="ts" />
 <style scoped>
-.arqui-tabla {
-	width: max-width;
-	height: 350px;
-}
 h5 {
 	margin: 15px;
 }
 a {
 	text-decoration: none;
 }
-.card {
+.cardAbout {
 	padding: 4px;
 	margin: 5px;
 }

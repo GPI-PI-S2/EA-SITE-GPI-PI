@@ -35,36 +35,13 @@ export default class ChartC extends Vue {
     const options = {
       type: this.type,
       data: chartData,
-      options: this.options
+      options: {
+        responsive:true,
+        maintainAspectRatio: false,
+      },
     }
     new Chart(canvas, options)
   }
 }
 
-export namespace ChartsPage {
-	export interface data {
-        labels: string[],
-        datasets: datasets,
-       options: ChartsPage.options
-	}
-	export interface options{
-        responsive: boolean,
-        lineTension: number,
-        scales: {
-            yAxes: yAxes []
-        }
-    }
-    export interface datasets{
-        label: string,
-        data: number[],
-        backgroundColor: string[],
-        borderColor: string[],
-        borderWidth: number
-    }
-    export interface yAxes {
-        ticks: {
-            beginAtZero:boolean,
-            padding:number
-        }
-    }
-}
+

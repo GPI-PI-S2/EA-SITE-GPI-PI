@@ -158,23 +158,26 @@
 				<q-btn color="primary" label="botón temporal para volver" @click="step = 0" />
 			</q-step>
 			<q-step :name="2" title="Resultados" icon="assignment" :done="step > 2">
-				<div class="row col-grow">
-					<div class="col-1"></div>
-					<div class="col-10">
-						<ChartC
-							type="bar"
-							:label="dataChart.datasets[0].label"
-							:data="dataChart.datasets[0].data"
-							:labels="dataChart.labels"
-						/>
-					</div>
+				<div class="chart-container">
+					<ChartC
+						class=""
+						type="bar"
+						:label="dataChart.datasets[0].label"
+						:data="dataChart.datasets[0].data"
+						:labels="dataChart.labels"
+					/>
 				</div>
+
 				<div class="row">
-					<div v-for="(indicator, index) in PromedioFactor" :key="index" class="col-6">
+					<div
+						class="flex flex-center col-12 col-md"
+						v-for="(indicator, index) in PromedioFactor"
+						:key="index"
+					>
 						<q-card class="my-card card" flat bordered>
 							<q-card-section horizontal>
-								<div class="col-7">
-									<q-card-section class="q-pt-xs">
+								<div class="row col-grow">
+									<q-card-section class="col-6 q-pt-xs">
 										<div class="text-h5 q-mt-sm q-mb-xs">
 											{{ indicator.title }}
 										</div>
@@ -182,9 +185,7 @@
 											{{ indicator.subtitle }}
 										</div>
 									</q-card-section>
-								</div>
-								<div class="col-5 rounded-borders">
-									<q-card-section class="flex flex-center">
+									<q-card-section class="col-6 q-pt-xs">
 										<h5>{{ indicator.value }}</h5>
 									</q-card-section>
 								</div>
@@ -197,11 +198,21 @@
 	</div>
 </template>
 <script src="./index.ts" lang="ts" />
+
 <style>
 .elements {
 	margin: 3px;
 }
 .card {
 	margin: 5px;
+	width: 70%;
+}
+.canvas {
+	border: 1px dotted primary;
+}
+.chart-container {
+	position: relative;
+	height: 60vh;
+	width: 100%;
 }
 </style>
