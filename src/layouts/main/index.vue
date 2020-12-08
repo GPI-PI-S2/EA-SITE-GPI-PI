@@ -6,8 +6,8 @@
 				bordered
 				:style="{ width: '1200px', maxWidth: '1200px', minHeight: '600px' }"
 			>
-				<div class="row full-height">
-					<q-list separator class="col-2">
+				<div class="row full-height no-wrap">
+					<q-list separator class="col-2" :style="{ width: menuWidth }">
 						<q-item
 							clickable
 							v-ripple
@@ -31,7 +31,7 @@
 						</q-item>
 					</q-list>
 					<q-separator vertical />
-					<div class="col-grow row">
+					<div class="col-grow" :style="{ width: `calc(99% - ${menuWidth})` }">
 						<router-view />
 					</div>
 				</div>
