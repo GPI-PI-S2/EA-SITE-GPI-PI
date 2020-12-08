@@ -18,21 +18,47 @@
 						clickable
 						class="q-py-md"
 						:key="index"
-						:disable="loading"
+						:disable="loading || !canUseExtractor(extractor.id)"
 						@click="onClickExtractor(extractor.id)"
 					>
 						<q-item-section avatar>
 							<q-icon size="md" :color="extractor.color" :name="extractor.icon" />
 						</q-item-section>
 						<q-item-section>
-							<q-item-label>{{ extractor.name }}</q-item-label>
+							<q-item-label>
+								<span
+									:class="
+										canUseExtractor(extractor.id) ? '' : 'text-strike q-pr-sm'
+									"
+									>{{ extractor.name }}</span
+								>
+								<q-chip
+									v-if="!canUseExtractor(extractor.id)"
+									dense
+									outline
+									square
+									color="negative"
+									text-color="white"
+									icon="mdi-alert-circle"
+								>
+									<span v-if="extractor.id === 'telegram-extractor'"
+										>Número de teléfono no establecido</span
+									>
+									<span v-else-if="extractor.id === 'twitter-extractor'"
+										>Api key no establecida</span
+									>
+									<span v-else-if="extractor.id === 'youtube-extractor'"
+										>Api key no establecida</span
+									>
+								</q-chip>
+							</q-item-label>
 							<q-item-label caption>v{{ extractor.version }}</q-item-label>
 						</q-item-section>
 					</q-item>
 				</q-list>
 			</q-step>
 			<q-step :name="1" title="Búsqueda" icon="mdi-magnify-plus-outline" :done="step > 1">
-				<div v-if="actualId == 0" class="row">
+				<div v-if="actualId === 'telegram-extractor'" class="row">
 					<q-dialog v-if="!registered" v-model="alert">
 						<q-card>
 							<q-card-section>
@@ -48,7 +74,7 @@
 										<q-icon class="elements" size="md" name="mdi-cellphone" />
 									</div>
 									<div>
-										<InputC class="elements" :dense="true" label="Código" />
+										<input-c class="elements" :dense="true" label="Código" />
 									</div>
 									<div>
 										<q-btn
@@ -91,9 +117,9 @@
 						</q-list>
 					</div>
 				</div>
-				<div v-else-if="actualId == 1" class="row">
+				<div v-else-if="actualId == 'youtube-extractor'" class="row">
 					<div class="col-10">
-						<InputC :dense="true" :label="extractors[actualId].label" />
+						<input-c :dense="true" label="Ingrese el url del video a analizar" />
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -107,9 +133,9 @@
 						/>
 					</div>
 				</div>
-				<div v-else-if="actualId == 2" class="row">
+				<div v-else-if="actualId === 'reddit-extractor'" class="row">
 					<div class="col-10">
-						<InputC :dense="true" :label="extractors[actualId].label" />
+						<input-c :dense="true" label="Ingrese el url del reddit a analizar" />
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -123,9 +149,9 @@
 						/>
 					</div>
 				</div>
-				<div v-else-if="actualId == 3" class="row">
+				<div v-else-if="actualId == 'twitter-extractor'" class="row">
 					<div class="col-10">
-						<InputC :dense="true" :label="extractors[actualId].label" />
+						<input-c :dense="true" label="Ingrese el Hashtag o término a analizar" />
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -139,9 +165,9 @@
 						/>
 					</div>
 				</div>
-				<div v-else-if="actualId == 4" class="row">
+				<div v-else-if="actualId == 'emol-extractor'" class="row">
 					<div class="col-10">
-						<InputC :dense="true" :label="extractors[actualId].label" />
+						<input-c :dense="true" label="Ingrese el url de la noticia a analizar" />
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -159,7 +185,7 @@
 			</q-step>
 			<q-step :name="2" title="Resultados" icon="assignment" :done="step > 2">
 				<div class="chart-container">
-					<ChartC
+					<chart-c
 						class=""
 						type="bar"
 						:label="dataChart.datasets[0].label"
@@ -199,7 +225,14 @@
 </template>
 <script src="./index.ts" lang="ts" />
 
-<style>
+<style scoped>
+.blockBox {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
 .elements {
 	margin: 3px;
 }

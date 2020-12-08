@@ -97,7 +97,7 @@ module.exports = configure(function(ctx) {
 			lang: 'en-us', // Quasar language pack
 			config: {},
 			screen: {
-				bodyClasses: true
+				bodyClasses: true,
 			},
 			// Possible values for "importStrategy":
 			// * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
@@ -112,7 +112,7 @@ module.exports = configure(function(ctx) {
 			// directives: [],
 
 			// Quasar plugins
-			plugins: ['Notify', 'Dialog'],
+			plugins: ['Notify', 'Dialog', 'LocalStorage'],
 		},
 
 		// animations: 'all', // --- includes all animations

@@ -1,9 +1,9 @@
 {
 	"name": "ea-site-gpi-pi",
-	"version": "0.0.1",
-	"description": "A Quasar Framework app",
+	"version": "0.1.1",
+	"description": "Extracción y cálculo de factores emocionales de redes sociales",
 	"productName": "PI GPI",
-	"author": "danielfredes <daniel@afredes.cl>",
+	"author": "DEV TEAM (PI-GPI-02-2020)",
 	"private": true,
 	"scripts": {
 		"lint": "eslint --ext .js,.ts,.vue ./",

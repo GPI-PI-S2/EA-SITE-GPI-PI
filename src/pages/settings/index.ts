@@ -1,36 +1,39 @@
-import gpiButton from 'components/gpiButton';
 import InputC from 'components/InputC';
 import SelectC from 'src/components/SelectC';
 import SendButton from 'src/components/SendButton';
-import { Component, Vue } from 'vue-property-decorator';
+import { StateInterface } from 'src/store';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 
 @Component({
-	components: { gpiButton, InputC, SelectC, SendButton },
+	components: { InputC, SelectC, SendButton },
 })
 export default class SettingsPage extends Vue {
-	value=0;
-	items = [
-		{
-			title: 'YouTube',
-			icon: 'mdi-youtube',
-			content: [{ label: 'Apikey', icon: 'mdi-key-variant' }],
-		},
-		{
-			title: 'Twitter',
-			icon: 'mdi-twitter',
-			content: [{ label: 'Apikey', icon: 'mdi-key-variant' }],
-		},
-		{
-			title: 'General',
-			icon: 'mdi-cog',
-			content: [{ label: 'Limite de comentarios', icon: 'mdi-comment' }],
-		},
-	];
-	telegram = {
-		title: 'Telegram',
-		icon: 'mdi-telegram',
-		items: [],
-	};
-	options = ['+56'];
+	apiKeyYoutube = '';
+	apiKeyTwitter = '';
+	phoneNumber = '';
+	limitComments = 0;
+	mounted() {
+		const state = this.$store.state as StateInterface;
+		this.apiKeyYoutube = state.app.apiKeyYoutube;
+		this.apiKeyTwitter = state.app.apiKeyTwitter;
+		this.phoneNumber = state.app.phoneNumber;
+		this.limitComments = state.app.limit;
+	}
+	@Watch('apiKeyYoutube')
+	onChangeApiKeyYoutube(c: string) {
+		this.$store.commit('app/setApiKeyYoutube', c);
+	}
+	@Watch('apiKeyTwitter')
+	onChangeApiKeyTwitter(c: string) {
+		this.$store.commit('app/setApiKeyTwitter', c);
+	}
+	@Watch('phoneNumber')
+	onChangeApiKeylimitComments(c: string) {
+		this.$store.commit('app/setPhoneNUmber', c);
+	}
+	@Watch('limitComments')
+	onChangeLimit(c: string) {
+		this.$store.commit('app/setLimit', c);
+	}
 }
 // id nombre tipo de chat
