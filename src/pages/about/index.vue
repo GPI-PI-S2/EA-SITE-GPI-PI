@@ -92,20 +92,6 @@
 									@click="onClickRepo(route.href)"
 								/>
 							</div>
-							<!-- 	<a
-									v-for="(route, index) in githubRoutes"
-									:key="index"
-									:href="route.href"
-								>
-									<q-btn
-										style="width:400px"
-										color="primary"
-										:outline="true"
-										no-caps
-										stretch
-										:label="route.label"
-									/>
-								</a> -->
 						</div>
 					</div>
 				</div>

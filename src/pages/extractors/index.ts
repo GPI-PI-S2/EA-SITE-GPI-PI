@@ -1,9 +1,9 @@
-import { timeout } from 'ea-common-gpi-pi';
-import { QSpinnerGears } from 'quasar';
+
+import { QSpinnerGears} from 'quasar';
 import ChartC from 'src/components/chart';
 import InputC from 'src/components/InputC';
 import { StateInterface } from 'src/store';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 
 @Component({
 	components: { ChartC, InputC },
@@ -12,6 +12,7 @@ export default class ExtractorsPage extends Vue {
 	apiKeyYoutube = '';
 	apiKeyTwitter = '';
 	phoneNumber = '';
+	codeHash!:string;
 	limitComments = NaN;
 	showTelegramDialog = false;
 	loading = false;
@@ -19,57 +20,56 @@ export default class ExtractorsPage extends Vue {
 	actualId = '';
 	alert = true;
 	registered = false;
-	urlYoutube!: string;
+	pending = false;
+	metakey= '';
+	metaReddit!: ExtractorsPage.RedditMeta;
+	urlYoutube='';
+	codeConfirmation='';
+	average!: ExtractorsPage.ResultsObtain;
 	PromedioFactor: ExtractorsPage.Indicator[] = [
 		{
-			title: 'Promedio 1',
+			title: 'Coeficiente emocional',
 			subtitle: 'about promedio1',
 			value: 1234,
 		},
 		{
-			title: 'Promedio 2',
+			title: 'Capital intelectual',
 			subtitle: 'about promedio2',
 			value: 4321,
 		},
 	];
 	dataChart: ExtractorsPage.DataChart = {
-		labels: [],
+		labels: [
+			'Asertividad',					
+			'Autoconsciencia emocional',
+			'Autocontrol emocional',
+			'Autoestima',
+			'Colaboración y cooperación',
+			'Comprensión organizativa',
+			'Consciencia crítica',
+			'Comunicacion asertiva',
+			'Desarrollo de las relaciones',
+			'Desarrollar y estimular a los demás',
+			'Empatía',
+			'Influencia',
+			'Liderazgo',
+			'Manejo de conflictos',
+			'Motivación de logro',
+			'Optimismo',
+			'Percepción y comprensión Emocional',
+			'Relación social',
+			'Tolerancia a la frustración',
+			'Violencia',
+		],
 		datasets: [
 			{
-				label: '',
+				label: 'Factores emocionales',
 				data: [],
 			},
 		],
 	};
-	chats: ExtractorsPage.Chat[] = [
-		{
-			id: 1,
-			type: 'chat',
-			comments: 104,
-			name: 'Chile yaoi 2020',
-			icon: 'mdi-telegram',
-		},
-		{
-			id: 2,
-			type: 'chat',
-			comments: 1000,
-			name: 'Chayanne fan club',
-			icon: 'mdi-telegram',
-		},
-		{
-			id: 3,
-			type: 'chat',
-			comments: 500,
-			name: 'Argentina is white ',
-			icon: 'mdi-telegram',
-		},
-		{
-			id: 4,
-			type: 'chat',
-			comments: 104,
-			name: 'Elpepe vs Etesech',
-			icon: 'mdi-telegram',
-		},
+	chats: ExtractorsPage.chatsTelegram[] = [
+			// icon: 'mdi-telegram',
 	];
 	extractors: ExtractorsPage.Extractor[] = [
 		{
@@ -134,142 +134,264 @@ export default class ExtractorsPage extends Vue {
 				return true;
 		}
 	}
-	getRandomNumber() {
-		return Math.floor(Math.random() * 15) + 1;
-	}
-	getChartInfo() {
-		this.dataChart = {
-			labels: [
-				'Asertividad',
-				'Autoconsciencia emocional',
-				'Autoestima',
-				'Colaboración y cooperación',
-				'Comprensión organizativa',
-				'Consciencia crítica',
-				'Desarrollo de las relaciones',
-				'Empatía',
-				'Influencia',
-				'Liderazgo',
-				'Manejo de conflictos',
-				'Motivación de logro',
-				'Optimismo',
-				'Percepción y comprensión Emocional',
-				'Relación social',
-				'Tolerancia a la frustración',
-				'Violencia',
-			],
-			datasets: [
-				{
-					label: 'Factores emocionales de maguna',
-					data: [],
-				},
-			],
-		};
-		for (let e = 0; e <= 17; e++) {
-			this.dataChart.datasets[0].data.push(this.getRandomNumber());
-		}
+	// getRandomNumber() {
+	// 	return Math.floor(Math.random() * 15) + 1;
+	// }
+	// Datos de prueba para el chart 
+	// getChartInfo() {
+	// 	this.dataChart = {
+	// 		labels: [
+	// 			'Asertividad',					
+	// 			'Autoconsciencia emocional',
+	// 			'Autocontrol emocional',
+	// 			'Autoestima',
+	// 			'Colaboración y cooperación',
+	// 			'Comprensión organizativa',
+	// 			'Consciencia crítica',
+	// 			'Comunicacion asertiva',
+	// 			'Desarrollo de las relaciones',
+	// 			'Desarrollar y estimular a los demás',
+	// 			'Empatía',
+	// 			'Influencia',
+	// 			'Liderazgo',
+	// 			'Manejo de conflictos',
+	// 			'Motivación de logro',
+	// 			'Optimismo',
+	// 			'Percepción y comprensión Emocional',
+	// 			'Relación social',
+	// 			'Tolerancia a la frustración',
+	// 			'Violencia',
+	// 		],
+	// 		datasets: [
+	// 			{
+	// 				label: 'Factores emocionales',
+	// 				data: [],
+	// 			},
+	// 		],
+	// 	};
+	// 	for (let e = 0; e <= 19; e++) {
+	// 		this.dataChart.datasets[0].data.push(this.getRandomNumber());
+	// 	}
+	// }
+	async fetchExtractor(url:string, bodyToSend: ExtractorsPage.ExtractorData){
+		return fetch(url,{
+			method: 'POST',
+			credentials:'include',
+			headers:{
+				'Content-type': 'application/json',
+				'X-API-KEY': 'rayaparalasuma'
+			},
+			body: JSON.stringify(bodyToSend)
+		})
+		.then(response => {
+			const res = response.json()
+			if (response.status==200){
+				return res
+			}
+			else{
+				return res.then(Promise.reject.bind(Promise))
+			}
+		})
 	}
 	async onClickExtractor(id: string) {
 		this.loading = true;
-		try {
+		if (this.actualId=='telegram-extractor' && this.pending==true){
 			this.actualId = id;
 			const dismiss = this.$q.notify({
 				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Inicializando...',
+				message: 'Solicitando los datos..',
 			});
-			await timeout(2000);
+			await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/deploy',{
+				id: this.actualId,
+				config: {
+					apiId: 1862196,
+					apiHash: 'ecf4f984d701a3ee7a909d0c505d2df5',
+				},
+				options:{
+					phone: this.phoneNumber,
+					code: this.codeConfirmation,
+					codeHash: this.codeHash
+				}
+			}).then((data) => {
+				console.log(data)
+				console.log('afuera')
+				const telegramResponse:ExtractorsPage.telegramRes = data.data
+				console.log(telegramResponse);
+				if (telegramResponse.data.chats){
+					telegramResponse.data.chats.map((chat)=>{
+						this.chats.push({
+							id: chat.id,
+							accessHash: chat.accessHash,
+							type: chat.type,
+							name: chat.name,
+							icon: 'mdi-telegram'
+						})
+					})
+				}		
+				this.pending=false
+				this.registered = true
+			}).catch((error) =>{
+				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
+			})
 			dismiss();
-			this.step = 1;
-		} catch (error) {
-			console.error(error);
-			this.$q.notify({ type: 'negative', message: 'Problemas al iniciar el extractor' });
+			this.loading = false
+		} else {
+			try {
+				this.actualId = id;
+				const dismiss = this.$q.notify({
+					spinner: (QSpinnerGears as unknown) as Vue,
+					message: 'Inicializando...',
+				});
+				await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/deploy',{
+					id:this.actualId,
+					config: {
+						bearerToken: this.actualId=='twitter-extractor'? this.apiKeyTwitter : undefined,
+						apiId: this.actualId=='telegram-extractor' ? 1862196 : undefined,
+						apiHash: this.actualId=='telegram-extractor' ? 'ecf4f984d701a3ee7a909d0c505d2df5' : undefined,
+						apiKey: this.actualId=='youtube-extractor' ? this.apiKeyYoutube : undefined,
+					},
+					options:{
+						phone: this.actualId=='telegram-extractor' ? this.phoneNumber : undefined,
+					}
+				}).then((data) => {
+					if (this.actualId=='telegram-extractor'){
+						const telegramResponse:ExtractorsPage.telegramRes = data.data
+						if (telegramResponse.status==2){
+							if (telegramResponse.data.codeHash){
+								this.codeHash = telegramResponse.data.codeHash
+							}
+							this.pending = true
+						} if (telegramResponse.status==3){
+							if(telegramResponse.data.chats){
+								telegramResponse.data.chats.map((chat)=>{
+									this.chats.push({
+										id: chat.id,
+										accessHash: chat.accessHash,
+										type: chat.type,
+										name: chat.name,
+										icon: 'mdi-telegram'
+									})
+								})
+							}
+							this.registered=true
+							this.pending=false
+							this.loading=false
+						}
+					}
+					this.step=1
+				}).catch((error) =>{
+					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
+				})
+				dismiss();
+			} catch (error){
+				console.log(error)
+			}
 		}
-		this.loading = false;
+		this.loading = false
 	}
-	async onclickTelegram(code: number) {
-		this.loading = true;
-		try {
-			await timeout(2000);
-			this.loading = false;
-			this.registered = true;
-		} catch (error) {
-			console.error(error);
+	async obtainExtractorData(){
+		if (this.actualId=='reddit-extractor'){
+			const cURL = new URL(this.metakey);
+			const paths = cURL.pathname.split('/');
+			if (paths.length != 7) throw new Error('URL inválido');
+			const subRedditlocal = paths[2];
+			const postIdlocal = paths[4];
+			if (!subRedditlocal || !postIdlocal) throw new Error('Subreddit o PostId Inválido');
+			this.metaReddit ={
+				postId: postIdlocal,
+				subReddit: subRedditlocal
+			}
+		} else if (this.actualId=='youtube-extractor'){
+			this.metakey = this.urlYoutube.split('v=')[1].substring(0,11)
+			console.log(this.metakey)
+		} else if (this.actualId=='telegram-extractor'){
+			console.log(this.metakey)
 		}
+		await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/obtain',{
+			id:this.actualId,
+			// config: {
+				// apiId: this.actualId=='telegram-extractor' ? 1862196 : undefined,
+				// apiHash: this.actualId=='telegram-extractor' ? 'ecf4f984d701a3ee7a909d0c505d2df5' : undefined
+			// },
+			options: {
+				limit: this.limitComments,
+				minSentenceSize: 3,
+				// code: this.actualId=='telegram-extractor' ? this.codeConfirmation : undefined,
+				// codeHash: this.actualId=='telegram-extractor' ? this.codeHash : undefined,
+				// phone: this.actualId=='telegram-extractor' ? this.phoneNumber : undefined, 
+				metaKey: this.actualId=='reddit-extractor' ? `{${this.metaReddit.subReddit},${this.metaReddit.postId}}` : this.metakey,
+				// metaKey: 'cTaBZ_CD9Ts'
+				// postId: this.actualId=='reddit-extractor' ? this.metaReddit.postId : undefined,
+				// subReddit: this.actualId=='reddit-extractor' ? this.metaReddit.subReddit : undefined,
+			}
+		}).then((data) =>{
+			const result: ExtractorsPage.ResultsObtain [] = data.data.data.results
+			const localAverage: ExtractorsPage.ResultsObtain = {
+				input:{
+					content:'Analisis'
+				},
+				sentiments: {
+				'asertividad': 0,
+				'autoconciencia emocional': 0,
+				'autocontrol emocional': 0,
+				'autoestima': 0,
+				'colaboración y cooperación': 0,
+				'comprensión organizativa': 0,
+				'conciencia crítica': 0,
+				'comunicacion asertiva': 0,
+				'desarrollo de las relaciones': 0,
+				'desarrollar y estimular a los demás': 0,
+				'empatía': 0,
+				'influencia':0,
+				'liderazgo':0,
+				'manejo de conflictos': 0,
+				'motivación de logro': 0,
+				'optimismo':0,
+				'percepción y comprensión emocional': 0,
+				'relación social': 0,
+				'tolerancia a la frustración': 0,
+				'violencia': 0
+				}
+			}
+			result.map((comment)=>{
+				localAverage.sentiments.asertividad += comment.sentiments.asertividad
+				localAverage.sentiments['autoconciencia emocional']+=comment.sentiments['autoconciencia emocional']
+				localAverage.sentiments['autocontrol emocional']+=comment.sentiments['autocontrol emocional']
+				localAverage.sentiments['autoestima']+=comment.sentiments['autoestima']
+				localAverage.sentiments['colaboración y cooperación']+=comment.sentiments['colaboración y cooperación']
+				localAverage.sentiments['comprensión organizativa']+=comment.sentiments['comprensión organizativa']
+				localAverage.sentiments['conciencia crítica']+=comment.sentiments['conciencia crítica']
+				localAverage.sentiments['comunicacion asertiva']+=comment.sentiments['comunicacion asertiva']
+				localAverage.sentiments['desarrollo de las relaciones']+=comment.sentiments['desarrollo de las relaciones']
+				localAverage.sentiments['desarrollar y estimular a los demás']+=comment.sentiments['desarrollar y estimular a los demás']
+				localAverage.sentiments.empatía+=comment.sentiments.empatía
+				localAverage.sentiments.influencia+=comment.sentiments.influencia
+				localAverage.sentiments.liderazgo+=comment.sentiments.liderazgo
+				localAverage.sentiments['manejo de conflictos']+=comment.sentiments['manejo de conflictos']
+				localAverage.sentiments['motivación de logro']+=comment.sentiments['motivación de logro']
+				localAverage.sentiments.optimismo+=comment.sentiments.optimismo
+				localAverage.sentiments['percepción y comprensión emocional']+=comment.sentiments['percepción y comprensión emocional']
+				localAverage.sentiments['relación social']+=comment.sentiments['relación social']
+				localAverage.sentiments['tolerancia a la frustración']+=comment.sentiments['tolerancia a la frustración']
+				localAverage.sentiments.violencia+=comment.sentiments.violencia
+			})
+			this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map((factor)=>{return (factor/result.length)})
+		})
+		.catch((error)=>{
+			this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
+		})
 	}
-	async onClickChat(id: number) {
-		this.loading = true;
-		try {
-			const dismiss = this.$q.notify({
-				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Cargando los resultados...',
-			});
-			this.getChartInfo();
-			await timeout(2000);
-			dismiss();
-			this.step = 2;
-		} catch (error) {
-			console.error(error);
-		}
+	@Watch('codeConfirmation')
+	onChangeCodeConfirmation(c: string){
+		this.codeConfirmation = c
 	}
-	async onSendYoutube() {
-		this.loading = true;
-		try {
-			const dismiss = this.$q.notify({
-				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Cargando los resultados...',
-			});
-			this.getChartInfo();
-			await timeout(2000);
-			dismiss();
-			this.step = 2;
-		} catch (error) {
-			console.error(error);
-		}
+	@Watch('metakey')
+	onChangeMetaKey(key: string){
+		this.metakey = key
 	}
-	async onSendReddit() {
-		this.loading = true;
-		try {
-			const dismiss = this.$q.notify({
-				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Cargando los resultados...',
-			});
-			this.getChartInfo();
-			await timeout(2000);
-			dismiss();
-			this.step = 2;
-		} catch (error) {
-			console.error(error);
-		}
-	}
-	async onSendTwitter() {
-		this.loading = true;
-		try {
-			const dismiss = this.$q.notify({
-				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Cargando los resultados...',
-			});
-			this.getChartInfo();
-			await timeout(2000);
-			dismiss();
-			this.step = 2;
-		} catch (error) {
-			console.error(error);
-		}
-	}
-	async onSendEmol() {
-		this.loading = true;
-		try {
-			const dismiss = this.$q.notify({
-				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Cargando los resultados...',
-			});
-			this.getChartInfo();
-			await timeout(2000);
-			dismiss();
-			this.step = 2;
-		} catch (error) {
-			console.error(error);
-		}
+	@Watch('urlYoutube')
+	onChangeUrlYoutube(meta: string){
+		this.urlYoutube = meta
 	}
 }
 export namespace ExtractorsPage {
@@ -283,8 +405,8 @@ export namespace ExtractorsPage {
 	export interface Chat {
 		id: number;
 		type: string;
-		comments: number;
 		name: string;
+		accessHash: string;
 		icon: string;
 	}
 	export interface Factors {
@@ -299,5 +421,71 @@ export namespace ExtractorsPage {
 		title: string;
 		subtitle: string;
 		value: number;
+	}
+	export interface ExtractorData{
+		id: string;
+		config?: {
+			bearerToken?: string;
+			apiKey?: string;
+			apiId?: number;
+			apiHash?: string;
+		};
+		options?: {
+			metaKey?: string,
+			limit?: number;
+			minSentenceSize?: number;
+			subReddit?: string;
+			postId?: string;
+			phone?: string;
+			code?: string;
+			codeHash?: string;
+		};
+	}
+	export interface ResultsObtain{
+		input: {
+			'content':string
+		},
+		sentiments: {
+			'asertividad': number,
+			'autoconciencia emocional': number,
+			'autoestima': number,
+			'desarrollar y estimular a los demás': number,
+			'empatía': number,
+			'autocontrol emocional': number,
+			'influencia':number,
+			'liderazgo':number,
+			'optimismo':number,
+			'relación social': number,
+			'colaboración y cooperación': number,
+			'comprensión organizativa': number,
+			'conciencia crítica': number,
+			'desarrollo de las relaciones': number,
+			'tolerancia a la frustración': number,
+			'comunicacion asertiva': number,
+			'manejo de conflictos': number,
+			'motivación de logro': number,
+			'percepción y comprensión emocional': number,
+			'violencia': number
+		}
+	}
+	export interface chatsTelegram{
+		id: number,
+		accessHash: string,
+		type: string,
+		name: string
+		icon?: string;
+	}
+	export interface telegramRes{
+		data :{
+			codeHash?: string,
+			message?: string,
+			type?: string;
+			chats?: chatsTelegram[]
+		},
+		status: number;
+	}
+	export interface RedditMeta{
+		postId: string,
+		subReddit: string
 	}
 }

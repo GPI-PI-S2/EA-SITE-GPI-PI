@@ -59,7 +59,7 @@
 			</q-step>
 			<q-step :name="1" title="Búsqueda" icon="mdi-magnify-plus-outline" :done="step > 1">
 				<div v-if="actualId === 'telegram-extractor'" class="row">
-					<q-dialog v-if="!registered" v-model="alert">
+					<q-dialog v-if="pending" v-model="alert">
 						<q-card>
 							<q-card-section>
 								<div class="text-h6">Notificación</div>
@@ -74,44 +74,48 @@
 										<q-icon class="elements" size="md" name="mdi-cellphone" />
 									</div>
 									<div>
-										<input-c class="elements" :dense="true" label="Código" />
+										<q-input
+											ico
+											dense
+											item-aligned
+											outlined
+											v-model="codeConfirmation"
+											placeholder="Código de verificación"
+										/>
 									</div>
 									<div>
 										<q-btn
-											:loading="loading"
 											round
 											class="elements"
 											color="primary"
 											size="md"
 											icon="mdi-send"
-											@click="onclickTelegram(2)"
+											@click="onClickExtractor('telegram-extractor')"
 										/>
 									</div>
 								</div>
 							</q-card-section>
-							<!-- <q-card-actions align="right">
-								<q-btn flat label="OK" color="primary" v-close-popup />
-							</q-card-actions> -->
 						</q-card>
 					</q-dialog>
-					<div class="col-grow">
+					<div v-if="registered" class="col-grow">
 						<q-list separator bordered>
 							<q-item
 								v-for="(chat, index) in chats"
 								clickable
 								class="q-py-md"
+								v-model="metakey"
 								:key="index"
 								:disable="loading"
-								@click="onClickChat(chat.id)"
+								@click="obtainExtractorData()"
 							>
 								<q-item-section avatar>
 									<q-icon size="md" :name="chat.icon" />
 								</q-item-section>
 								<q-item-section>
 									<q-item-label>{{ chat.name }}</q-item-label>
-									<q-item-label caption
-										>{{ chat.comments }} comentarios</q-item-label
-									>
+									<q-item-label caption>{{
+										chat.type.toUpperCase()
+									}}</q-item-label>
 								</q-item-section>
 							</q-item>
 						</q-list>
@@ -119,7 +123,14 @@
 				</div>
 				<div v-else-if="actualId == 'youtube-extractor'" class="row">
 					<div class="col-10">
-						<input-c :dense="true" label="Ingrese el url del video a analizar" />
+						<q-input
+							ico
+							dense
+							item-aligned
+							outlined
+							v-model="urlYoutube"
+							label="Ingrese el url del video a analizar"
+						/>
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -129,13 +140,21 @@
 							color="primary"
 							size="md"
 							icon="mdi-send"
-							@click="onSendYoutube()"
+							@click="obtainExtractorData()"
 						/>
 					</div>
 				</div>
 				<div v-else-if="actualId === 'reddit-extractor'" class="row">
 					<div class="col-10">
-						<input-c :dense="true" label="Ingrese el url del reddit a analizar" />
+						<!-- Revisar este caso -->
+						<q-input
+							ico
+							dense
+							item-aligned
+							outlined
+							v-model="metakey"
+							label="Ingrese el url del reddit a analizar"
+						/>
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -145,13 +164,20 @@
 							color="primary"
 							size="md"
 							icon="mdi-send"
-							@click="onSendReddit()"
+							@click="obtainExtractorData()"
 						/>
 					</div>
 				</div>
 				<div v-else-if="actualId == 'twitter-extractor'" class="row">
 					<div class="col-10">
-						<input-c :dense="true" label="Ingrese el Hashtag o término a analizar" />
+						<q-input
+							ico
+							dense
+							item-aligned
+							outlined
+							v-model="metakey"
+							label="Ingrese el Hashtag o término a analizar"
+						/>
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -161,13 +187,20 @@
 							color="primary"
 							size="md"
 							icon="mdi-send"
-							@click="onSendTwitter()"
+							@click="obtainExtractorData()"
 						/>
 					</div>
 				</div>
 				<div v-else-if="actualId == 'emol-extractor'" class="row">
 					<div class="col-10">
-						<input-c :dense="true" label="Ingrese el url de la noticia a analizar" />
+						<q-input
+							ico
+							dense
+							item-aligned
+							outlined
+							v-model="metakey"
+							label="Ingrese el url de la noticia a analizar"
+						/>
 					</div>
 					<div class="col-2">
 						<q-btn
@@ -177,7 +210,7 @@
 							color="primary"
 							size="md"
 							icon="mdi-send"
-							@click="onSendEmol()"
+							@click="obtainExtractorData()"
 						/>
 					</div>
 				</div>

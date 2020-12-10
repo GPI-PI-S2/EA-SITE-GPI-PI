@@ -10,8 +10,7 @@ export default class AboutPage extends Vue {
 			icon: 'mdi-information-outline',
 			caption: '',
 			cardContent: `Estudiantes de la carrera ingeniería civil en computación mención informática de la UTEM cursando la asignatura
-			Gestión de proyectos informáticos impartida por el Dr. Oscar Magna, en esta ocasión se desarrolló el proyecto asociado a la tesis
-			<nombre que no recuerdo> implementada en 
+			Gestión de proyectos informáticos impartida por el Dr. Oscar Magna, en esta ocasión se desarrolló el proyecto asociado al análisis de sentimientos en redes sociales el segundo semestre del año 2020
 
 			`,
 		},
@@ -39,14 +38,14 @@ export default class AboutPage extends Vue {
 				{
 					name: 'Diego Sepúlveda',
 					img:
-						'https://lh3.googleusercontent.com/TSfGO60jrueMoYHDYfR0_V2US_XvQF1BZBGLXt60gyMWRgY_-e4W9zx4qyMXfXvptWJBup9bswvfqePxRyYLViiXOfOYfBGOaubeCJDnxPnTsurqFBWtKJ-_MC7T5-G16WB_E-00HZ1mTw237zjyZsiEmWKWkXD3jAXw18ozx5w8FT11DG3xvUj7TjkJ7rPlSY81K6tO8nyDhwQlvAUENmoXSQF15o5t9f4Rl46d__1Sd5hbubU5ph_cRHu8lwIva2Q_tQgbdJAF0OEaBetvJYhlymyPV2VHNQpiWEgueVEDMEBUrmks-GjBXLd3bUTBrlUrOxbMD590Te8-8jjk_AyPe2GLmcokoi_4BC8XffozjGzE8-KS4gHAqfcBaBQwivoQIZd51lIuhtkL6CTSH6gKlSp-Dvdq7c58mzp6r9QelWoADUcrFiimHsKccw89LwUBK1IfGLabOE5iTc-kt81l50o9FdOG7mrNwna9DdPLXDq6YEWdRIlypT7jK5Cpo-HV8B4iRW1pwdN7R6E3oY1kbsIK1VtFHjlDDsQqDXDIEeRCWDGaOD8upRo17v2u_IFqxPFUDKTWl4iFvfiyKhAJIzGtD1g4JMqGSOe6EByk7pGoIpmSmPYGxwJA0xFSMGHlskI5CVqhmWg2IztyYLPP3ATUU50H9M7zqVsum4Q6bF_AQvwmH-bORPCc0g=w595-h594-no?authuser=1',
+						'https://i.imgur.com/D6Sjc06.png',
 					lider: true,
 					extra: 'Jefe de proyecto',
 					email: 'diego.sepulvedas@utem.cl',
 				},
 				{
 					name: 'Daniel Fredes Lizama',
-					img: '',
+					img: 'https://avatars1.githubusercontent.com/u/72327723?s=460&u=71afedeadab1bd5327c690e5a89566ee98ec18a9&v=4',
 					lider: true,
 					extra: 'Líder de desarrollo',
 					email: 'daniel.fredesl@utem.cl',
@@ -80,28 +79,28 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Nicolás Andrews',
-					img: '',
+					img: 'https://cdn.discordapp.com/attachments/666791661363265536/785603323276951582/Untitled.png',
 					lider: false,
 					extra: '',
 					email: 'nicolas.andrewss@utem.cl',
 				},
 				{
 					name: 'Daniel Cajas',
-					img: '',
+					img: 'https://i.imgur.com/VbtXjrM.jpg?1',
 					lider: false,
 					extra: '',
 					email: 'daniel0cajas@gmail.com',
 				},
 				{
 					name: 'Rodrigo Carmona',
-					img: '',
+					img: 'https://i.imgur.com/5uOga6a.jpg',
 					lider: false,
 					extra: '',
 					email: 'rodrigo.carmonar@utem.cl',
 				},
 				{
 					name: 'Hector Carter',
-					img: '',
+					img: 'https://i.imgur.com/765Fzg7.jpg',
 					lider: false,
 					extra: '',
 					email: 'hector.carterc@utem.cl',
@@ -115,14 +114,14 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Miguel Gallardo',
-					img: '',
+					img: 'https://i.imgur.com/4mGG0LS.png?1',
 					lider: false,
 					extra: '',
 					email: 'Miguel.and.gallardo@gmail.com',
 				},
 				{
 					name: 'Allan Morales',
-					img: '',
+					img: 'https://i.imgur.com/SJo1R1p.jpg?1',
 					lider: false,
 					extra: '',
 					email: 'allan.moralesp@utem.cl',
@@ -136,7 +135,7 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Humberto Román',
-					img: '',
+					img: 'https://i.imgur.com/ZxvLo8o.jpg',
 					lider: false,
 					extra: '',
 					email: 'humberto.romanm@utem.cl',
@@ -150,7 +149,7 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Shu-yi Wong',
-					img: '',
+					img: 'https://scontent.fscl18-1.fna.fbcdn.net/v/t1.0-9/92728559_10222990941385963_5028443007444058112_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=NPAeli0-eNAAX-CRW90&_nc_ht=scontent.fscl18-1.fna&oh=df7c2564a93aff5e735a975805ac7e27&oe=5FF2851F',
 					lider: false,
 					extra: '',
 					email: 'shu-yi.wongb@utem.cl',
@@ -176,7 +175,7 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Luis Felipe Jaña',
-					img: '',
+					img: 'https://avatars0.githubusercontent.com/u/32202571?s=400&u=b8366a382d24b4c72a0d00c5bced9fa699450edc&v=4',
 					lider: false,
 					extra: '',
 					email: 'luis.janag@utem.cl',
@@ -198,7 +197,7 @@ export default class AboutPage extends Vue {
 					name: 'Ricardo Aliste',
 					img: 'https://i.imgur.com/0GqqJiM.jpg',
 					lider: false,
-					extra: '',
+					extra: 'https://i.imgur.com/0GqqJiM.jpg',
 					email: 'ricardo.alisteg@utem.cl',
 				},
 				{
@@ -210,14 +209,14 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Gonzalo Barcaza',
-					img: '',
+					img: 'https://i.imgur.com/YMwi9et.jpg',
 					lider: false,
 					extra: '',
 					email: 'gonzalo.barcazat@utem.cl',
 				},
 				{
 					name: 'Lucas Carmona',
-					img: '',
+					img: 'https://i.imgur.com/K4Witgw.jpeg',
 					lider: false,
 					extra: '',
 					email: 'lucas.carmonam@utem.cl',
@@ -232,28 +231,28 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Cristian Flores',
-					img: '',
+					img: 'https://i.imgur.com/1lCgg4x.jpeg',
 					lider: false,
 					extra: '',
 					email: 'cristian.floresa@utem.cl',
 				},
 				{
 					name: 'Felipe Flores',
-					img: '',
+					img: 'https://i.imgur.com/qgiATc1.jpg?1',
 					lider: false,
 					extra: '',
 					email: 'fuerte.felipe@gmail.com',
 				},
 				{
 					name: 'Yerko Foncea',
-					img: '',
+					img: 'https://i.imgur.com/iwsOCDp.jpeg',
 					lider: false,
-					extra: '',
+					extra: 'https://i.imgur.com/iwsOCDp.jpg',
 					email: 'yerko.fonceac@utem.cl',
 				},
 				{
 					name: 'Javier Gálves',
-					img: '',
+					img: 'https://scontent.fscl26-1.fna.fbcdn.net/v/t31.0-8/202528_103009999848276_1941411796_o.jpg?_nc_cat=100&ccb=2&_nc_sid=09cbfe&_nc_ohc=tdhktYsbMw0AX8BIpbL&_nc_ht=scontent.fscl26-1.fna&oh=d7ebfa4a45d5eac0fd15eb5caa395c5a&oe=5FF3A00F',
 					lider: false,
 					extra: '',
 					email: 'javier.galvezg@utem.cl',
@@ -268,7 +267,7 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Mohamed Gorayeb',
-					img: '',
+					img: 'https://i.imgur.com/hXGISkB.jpg',
 					lider: false,
 					extra: '',
 					email: 'mohamed.gorayebm@utem.cl',
@@ -289,14 +288,14 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Ivan Pérez',
-					img: '',
+					img: 'https://scontent.fscl29-1.fna.fbcdn.net/v/t1.0-9/82937988_2811728638848360_9123587087436611584_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=AzDfLiCWiAYAX9aCBJu&_nc_ht=scontent.fscl29-1.fna&oh=f2ba4f72dd2ffa597c4bf8c5d1697221&oe=5FF4662F',
 					lider: false,
 					extra: '',
 					email: 'ivan.perez.alarcon@utem.cl',
 				},
 				{
 					name: 'Daniel Sisinni',
-					img: '',
+					img: 'https://i.imgur.com/nCQwfAH.jpg',
 					lider: false,
 					extra: '',
 					email: 'diss_metal95@hotmail.com',
