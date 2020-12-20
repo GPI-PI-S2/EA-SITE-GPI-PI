@@ -31,6 +31,23 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-12 text-subtitle2 q-pt-md q-pb-sm">Detalle por extractor</div>
+		<div class="chart-container">
+			<chart-c
+				class=""
+				v-if="!isLoadingChart"
+				type="pie"
+				:data="dataChart.datasets[0].data"
+				:labels="dataChart.labels"
+			/>
+		</div>
 	</div>
 </template>
 <script src="./index.ts" lang="ts" />
+<style>
+.chart-container {
+	position: relative;
+	height: 60vh;
+	width: 100%;
+}
+</style>

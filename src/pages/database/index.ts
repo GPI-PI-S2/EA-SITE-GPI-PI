@@ -7,5 +7,4 @@ import tableC from 'src/components/tableC';
 export default class DatabasePage extends Vue {
 	isLoading = false;
 	realData = []
-	
 }
