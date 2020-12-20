@@ -5,10 +5,10 @@
 				Estadísticas
 			</div>
 		</div>
+		<div class="col-12 text-subtitle2 q-pt-md q-pb-sm">Contribuciones</div>
 		<div class="col-12 q-pb-md">
-			<div class="text-subtitle2 col-12 q-pt-lg q-pb-sm">Contribuciones</div>
 			<div class="row q-pa-md">
-				<div class="col-12 col-md-10">
+				<div class="col-12">
 					<transition
 						appear
 						enter-active-class="animated fadeIn"

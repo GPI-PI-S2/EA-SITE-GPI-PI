@@ -7,6 +7,8 @@ export default class TableC extends Vue {
     data!: tableComponent.data []
     @Prop({default: 'Tabla'})
     title!:string;
+    @Prop({default:10})
+    records!:number;
 }
 
 export namespace tableComponent{

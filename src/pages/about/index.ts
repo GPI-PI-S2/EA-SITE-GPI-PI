@@ -168,7 +168,7 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Sebastian Pérez',
-					img: '',
+					img: 'https://i.imgur.com/JzvEK4j.jpg',
 					lider: false,
 					extra: 'El pixula',
 					email: 'sebastian.perezb@utem.cl',

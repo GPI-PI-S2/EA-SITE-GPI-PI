@@ -13,8 +13,8 @@ const routes: RouteConfig[] = [
 			{ path: 'settings', name: 'settings', component: () => import('pages/settings') },
 			{ path: 'about', name: 'about', component: () => import('pages/about') },
 			{ path: 'stats', name: 'stats', component: () => import('pages/stats') },
-			{ path: 'https://github.com/GPI-PI-S2/EA-SITE-GPI-PI', name: 'site-gpi-pi'},
-			{ path: 'https://www.gpi.valdomero.live/api/v1', name: 'API_BASE_URI'}
+			{ path: 'database', name: 'database', component: () => import('pages/database') },
+			{ path: 'results', name:'results', component: () => import ('pages/results')}
 		],
 	},
 	// Always leave this as last one,
