@@ -33,27 +33,47 @@
 
 				<q-step :name="2" title="Resultados" icon="mdi-comment">
 					<div class="row justify-center q-pb-5">
-						<q-card
-							v-for="(indicator, index) in PromedioFactor"
-							:key="index"
-							class="col-md-3 indicator"
-							bordered
-						>
-							<div class="row col-grow justify-center">
-								<q-card-section class="q-pt-xs">
-									<div class="text-h6 ">
-										{{ indicator.title }}
+						<template v-for="(indicator, index) in PromedioFactor">
+							<div
+								v-if="indicator.title == 'Indice de inteligencia emocional'"
+								class="row col-12 justify-center q-pb-5"
+							>
+								<q-card :key="index" class="col-md-3 indicator" bordered>
+									<div class="row col-grow justify-center">
+										<q-card-section class="q-pt-xs">
+											<div class="text-h6 text-center">
+												{{ indicator.title }}
+											</div>
+										</q-card-section>
 									</div>
-								</q-card-section>
+									<div class="row col-grow justify-center">
+										<q-separator />
+										<q-card-section class="q-pt-xs">
+											<h5>{{ indicator.value }}</h5>
+										</q-card-section>
+									</div>
+								</q-card>
 							</div>
-							<div class="row col-grow justify-center">
-								<q-separator class="q-my-md" />
-								<q-card-section class="q-pt-xs">
-									<h5>{{ indicator.value }}</h5>
-								</q-card-section>
+							<div v-else>
+								<q-card :key="index" class="col-md-3 indicator" bordered>
+									<div class="row col-grow justify-center">
+										<q-card-section class="q-pt-xs">
+											<div class="text-h6 text-center">
+												{{ indicator.title }}
+											</div>
+										</q-card-section>
+									</div>
+									<div class="row col-grow justify-center">
+										<q-separator />
+										<q-card-section class="q-pt-xs">
+											<h5>{{ indicator.value }}</h5>
+										</q-card-section>
+									</div>
+								</q-card>
 							</div>
-						</q-card>
+						</template>
 					</div>
+
 					<div class="chart-container">
 						<chart-c
 							class=""

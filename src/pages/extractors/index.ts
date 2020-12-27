@@ -22,25 +22,25 @@ export default class ExtractorsPage extends Vue {
 	registered = false;
 	pending = false;
 	metakey= '';
-	metaReddit!: ExtractorsPage.RedditMeta;
 	urlYoutube='';
 	codeConfirmation='';
 	average!: ExtractorsPage.ResultsObtain;
-	PromedioFactor: ExtractorsPage.Indicator[] = [
-		{
-			title: 'Coeficiente emocional',
-			subtitle: 'about promedio1',
-			value: 1234,
-		},
-		{
-			title: 'Capital intelectual',
-			subtitle: 'about promedio2',
-			value: 4321,
-		},
-	];
+	PromedioFactor: ExtractorsPage.Indicator[] = [];
+	// PromedioFactor: ExtractorsPage.Indicator[] = [
+	// 	{
+	// 		title: 'Coeficiente emocional',
+	// 		subtitle: 'about promedio1',
+	// 		value: 1234,
+	// 	},
+	// 	{
+	// 		title: 'Capital intelectual',
+	// 		subtitle: 'about promedio2',
+	// 		value: 4321,
+	// 	},
+	// ];
 	dataChart: ExtractorsPage.DataChart = {
 		labels: [
-			'Asertividad',					
+			'Asertividad',
 			'Autoconsciencia emocional',
 			'Autocontrol emocional',
 			'Autoestima',
@@ -134,45 +134,6 @@ export default class ExtractorsPage extends Vue {
 				return true;
 		}
 	}
-	// getRandomNumber() {
-	// 	return Math.floor(Math.random() * 15) + 1;
-	// }
-	// Datos de prueba para el chart 
-	// getChartInfo() {
-	// 	this.dataChart = {
-	// 		labels: [
-	// 			'Asertividad',					
-	// 			'Autoconsciencia emocional',
-	// 			'Autocontrol emocional',
-	// 			'Autoestima',
-	// 			'Colaboración y cooperación',
-	// 			'Comprensión organizativa',
-	// 			'Consciencia crítica',
-	// 			'Comunicacion asertiva',
-	// 			'Desarrollo de las relaciones',
-	// 			'Desarrollar y estimular a los demás',
-	// 			'Empatía',
-	// 			'Influencia',
-	// 			'Liderazgo',
-	// 			'Manejo de conflictos',
-	// 			'Motivación de logro',
-	// 			'Optimismo',
-	// 			'Percepción y comprensión Emocional',
-	// 			'Relación social',
-	// 			'Tolerancia a la frustración',
-	// 			'Violencia',
-	// 		],
-	// 		datasets: [
-	// 			{
-	// 				label: 'Factores emocionales',
-	// 				data: [],
-	// 			},
-	// 		],
-	// 	};
-	// 	for (let e = 0; e <= 19; e++) {
-	// 		this.dataChart.datasets[0].data.push(this.getRandomNumber());
-	// 	}
-	// }
 	async fetchExtractor(url:string, bodyToSend: ExtractorsPage.ExtractorData){
 		return fetch(url,{
 			method: 'POST',
@@ -201,7 +162,7 @@ export default class ExtractorsPage extends Vue {
 				spinner: (QSpinnerGears as unknown) as Vue,
 				message: 'Solicitando los datos..',
 			});
-			await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/deploy',{
+			await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy',{
 				id: this.actualId,
 				config: {
 					apiId: 1862196,
@@ -213,8 +174,6 @@ export default class ExtractorsPage extends Vue {
 					codeHash: this.codeHash
 				}
 			}).then((data) => {
-				console.log(data)
-				console.log('afuera')
 				const telegramResponse:ExtractorsPage.telegramRes = data.data
 				console.log(telegramResponse);
 				if (telegramResponse.data.chats){
@@ -227,7 +186,7 @@ export default class ExtractorsPage extends Vue {
 							icon: 'mdi-telegram'
 						})
 					})
-				}		
+				}
 				this.pending=false
 				this.registered = true
 			}).catch((error) =>{
@@ -238,22 +197,22 @@ export default class ExtractorsPage extends Vue {
 		} else {
 			try {
 				this.actualId = id;
-				const dismiss = this.$q.notify({
-					spinner: (QSpinnerGears as unknown) as Vue,
-					message: 'Inicializando...',
-				});
-				await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/deploy',{
-					id:this.actualId,
-					config: {
-						bearerToken: this.actualId=='twitter-extractor'? this.apiKeyTwitter : undefined,
-						apiId: this.actualId=='telegram-extractor' ? 1862196 : undefined,
-						apiHash: this.actualId=='telegram-extractor' ? 'ecf4f984d701a3ee7a909d0c505d2df5' : undefined,
-						apiKey: this.actualId=='youtube-extractor' ? this.apiKeyYoutube : undefined,
-					},
-					options:{
-						phone: this.actualId=='telegram-extractor' ? this.phoneNumber : undefined,
-					}
+				await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy',{
+						id:this.actualId,
+						config: {
+							bearerToken: this.actualId=='twitter-extractor'? this.apiKeyTwitter : undefined,
+							apiId: this.actualId=='telegram-extractor' ? 1862196 : undefined,
+							apiHash: this.actualId=='telegram-extractor' ? 'ecf4f984d701a3ee7a909d0c505d2df5' : undefined,
+							apiKey: this.actualId=='youtube-extractor' ? this.apiKeyYoutube : undefined,
+						},
+						options:{
+							phone: this.actualId=='telegram-extractor' ? this.phoneNumber : undefined,
+						}
 				}).then((data) => {
+					const dismiss = this.$q.notify({
+						spinner: (QSpinnerGears as unknown) as Vue,
+						message: 'Inicializando...',
+					});
 					if (this.actualId=='telegram-extractor'){
 						const telegramResponse:ExtractorsPage.telegramRes = data.data
 						if (telegramResponse.status==2){
@@ -280,9 +239,10 @@ export default class ExtractorsPage extends Vue {
 					}
 					this.step=1
 				}).catch((error) =>{
+					console.log(error)
 					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 				})
-				dismiss();
+				
 			} catch (error){
 				console.log(error)
 			}
@@ -290,6 +250,13 @@ export default class ExtractorsPage extends Vue {
 		this.loading = false
 	}
 	async obtainExtractorData(){
+		let body: ExtractorsPage.ExtractorData = {
+			id: this.actualId,
+			options:{
+				limit: this.limitComments,
+				minSentenceSize: 3,
+			}
+		}
 		if (this.actualId=='reddit-extractor'){
 			const cURL = new URL(this.metakey);
 			const paths = cURL.pathname.split('/');
@@ -297,35 +264,28 @@ export default class ExtractorsPage extends Vue {
 			const subRedditlocal = paths[2];
 			const postIdlocal = paths[4];
 			if (!subRedditlocal || !postIdlocal) throw new Error('Subreddit o PostId Inválido');
-			this.metaReddit ={
-				postId: postIdlocal,
-				subReddit: subRedditlocal
+			else{
+				body.options.metaKey =`{${subRedditlocal},${postIdlocal}}`,
+				body.options.postId= postIdlocal
+				body.options.subReddit= subRedditlocal
 			}
 		} else if (this.actualId=='youtube-extractor'){
-			this.metakey = this.urlYoutube.split('v=')[1].substring(0,11)
-			console.log(this.metakey)
+			body.options.metaKey = this.urlYoutube.split('v=')[1].substring(0,11)
 		} else if (this.actualId=='telegram-extractor'){
 			console.log(this.metakey)
+		} else if (this.actualId=='emol-extractor'){
+			body.options.metaKey = this.metakey
+		} else if (this.actualId=='twitter-extractor'){
+			body.options.metaKey = this.metakey
 		}
-		await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/obtain',{
-			id:this.actualId,
-			// config: {
-				// apiId: this.actualId=='telegram-extractor' ? 1862196 : undefined,
-				// apiHash: this.actualId=='telegram-extractor' ? 'ecf4f984d701a3ee7a909d0c505d2df5' : undefined
-			// },
-			options: {
-				limit: this.limitComments,
-				minSentenceSize: 3,
-				// code: this.actualId=='telegram-extractor' ? this.codeConfirmation : undefined,
-				// codeHash: this.actualId=='telegram-extractor' ? this.codeHash : undefined,
-				// phone: this.actualId=='telegram-extractor' ? this.phoneNumber : undefined, 
-				metaKey: this.actualId=='reddit-extractor' ? `{${this.metaReddit.subReddit},${this.metaReddit.postId}}` : this.metakey,
-				// metaKey: 'cTaBZ_CD9Ts'
-				// postId: this.actualId=='reddit-extractor' ? this.metaReddit.postId : undefined,
-				// subReddit: this.actualId=='reddit-extractor' ? this.metaReddit.subReddit : undefined,
-			}
-		}).then((data) =>{
-			const result: ExtractorsPage.ResultsObtain [] = data.data.data.results
+		const dismiss = this.$q.notify({
+			spinner: (QSpinnerGears as unknown) as Vue,
+			message: 'Solicitando los datos..',
+		});
+		dismiss();
+		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain',body).then((data) =>{
+			this.loading = true
+			const result: ExtractorsPage.ResultsObtain [] = data.data.data.result
 			const localAverage: ExtractorsPage.ResultsObtain = {
 				input:{
 					content:'Analisis'
@@ -375,7 +335,14 @@ export default class ExtractorsPage extends Vue {
 				localAverage.sentiments['tolerancia a la frustración']+=comment.sentiments['tolerancia a la frustración']
 				localAverage.sentiments.violencia+=comment.sentiments.violencia
 			})
+			// this.PromedioFactor.push({
+			// 	title: 'Indice de capital emocional',
+			// 	value: localAverage.sentiments.autoestima + localAverage.sentiments['autoconciencia emocional'] + localAverage.sentiments['motivación de logro']+ localAverage.sentiments.
+			// })
 			this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map((factor)=>{return (factor/result.length)})
+			dismiss();
+			this.loading = false
+			this.step=2
 		})
 		.catch((error)=>{
 			this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
@@ -419,7 +386,7 @@ export namespace ExtractorsPage {
 	}
 	export interface Indicator {
 		title: string;
-		subtitle: string;
+		subtitle?: string;
 		value: number;
 	}
 	export interface ExtractorData{
