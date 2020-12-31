@@ -1,5 +1,4 @@
-import { StateInterface } from 'src/store';
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import ChartC from 'src/components/chart';
 @Component({
 	components: { ChartC },
@@ -68,31 +67,32 @@ export default class ResultsPage extends Vue {
 			})
 		})
 		.then(response => {return response.json()})
-		.then(data => {
+		.then((data: ResultsPage.Results) => {
+			const resData = data.data
 			this.dataChart.datasets[0].data = []
-			this.dataChart.datasets[0].data.push(data.data.sentiments['asertividad'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['autoconciencia emocional'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['autocontrol emocional'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['autoestima'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['colaboración y cooperación'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['comprensión organizativa'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['conciencia crítica'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['comunicacion asertiva'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['desarrollo de las relaciones'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['desarrollar y estimular a los demás'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['empatía'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['influencia'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['liderazgo'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['manejo de conflictos'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['motivación de logro'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['optimismo'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['percepción y comprensión emocional'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['relación social'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['tolerancia a la frustración'])
-			this.dataChart.datasets[0].data.push(data.data.sentiments['violencia'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['asertividad'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['autoconciencia emocional'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['autocontrol emocional'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['autoestima'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['colaboración y cooperación'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['comprensión organizativa'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['conciencia crítica'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['comunicacion asertiva'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['desarrollo de las relaciones'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['desarrollar y estimular a los demás'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['empatía'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['influencia'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['liderazgo'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['manejo de conflictos'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['motivación de logro'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['optimismo'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['percepción y comprensión emocional'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['relación social'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['tolerancia a la frustración'])
+			this.dataChart.datasets[0].data.push(resData.sentiments['violencia'])
 			this.step=2
 		})
-		.catch((error) =>{
+		.catch((error: ResultsPage.ErrorType) =>{
 			this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 		})
 		this.loading = false
@@ -122,5 +122,37 @@ export namespace ResultsPage{
 	export interface DataChart {
 		labels: string[];
 		datasets: ResultsPage.Factors[];
+	}
+	export interface Results{
+		data:{
+			sentiments:{
+				asertividad:number,
+				'autoconciencia emocional': number,
+				'autocontrol emocional': number,
+				autoestima: number,
+				'colaboración y cooperación': number,
+				'comprensión organizativa': number,
+				'comunicacion asertiva': number,
+				'conciencia crítica': number,
+				'desarrollar y estimular a los demás': number,
+				'desarrollo de las relaciones': number,
+				empatía: number,
+				influencia: number,
+				liderazgo: number,
+				'manejo de conflictos': number,
+				'motivación de logro': number,
+				'optimismo': number,
+				'percepción y comprensión emocional': number,
+				'relación social': number,
+				'tolerancia a la frustración': number,
+				violencia: number
+			},
+			total: number
+		}
+	}
+	export interface ErrorType{
+		type: string,
+		message: string,
+		data: string[]
 	}
 }

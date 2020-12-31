@@ -87,11 +87,6 @@
 				<template v-slot:navigation>
 					<q-stepper-navigation>
 						<q-btn
-							@click="$refs.stepper.next()"
-							color="primary"
-							:label="step === 4 ? 'Finish' : 'Continue'"
-						/>
-						<q-btn
 							v-if="step > 1"
 							flat
 							color="primary"

@@ -1,5 +1,3 @@
-
-import { QSpinnerGears} from 'quasar';
 import ChartC from 'src/components/chart';
 import InputC from 'src/components/InputC';
 import { StateInterface } from 'src/store';
@@ -184,11 +182,10 @@ export default class ExtractorsPage extends Vue {
 				}
 				this.pending=false
 				this.registered = true
-			}).catch((error) =>{
+			}).catch((error: ExtractorsPage.ErrorType) =>{
 				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 			})
 		} else {
-			try {
 				this.actualId = id;
 				await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy',{
 						id:this.actualId,
@@ -227,19 +224,15 @@ export default class ExtractorsPage extends Vue {
 						}
 					}
 					this.step=1
-				}).catch((error) =>{
-					console.log(error)
+				}).catch((error: ExtractorsPage.ErrorType) =>{
 					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 				})
-			} catch (error){
-				console.log(error)
-			}
 		}
 		this.loading = false
 	}
 	async obtainExtractorData(){
 		this.loading = true
-		let body: ExtractorsPage.ExtractorData = {
+		const body: ExtractorsPage.ExtractorData = {
 			id: this.actualId,
 			options:{
 				limit: this.limitComments,
@@ -318,7 +311,7 @@ export default class ExtractorsPage extends Vue {
 			this.loading = false
 			this.step=2
 		})
-		.catch((error)=>{
+		.catch((error: ExtractorsPage.ErrorType)=>{
 			this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 		})
 	}
@@ -428,5 +421,10 @@ export namespace ExtractorsPage {
 	export interface RedditMeta{
 		postId: string,
 		subReddit: string
+	}
+	export interface ErrorType{
+		type: string,
+		message: string,
+		data: string[]
 	}
 }

@@ -1,5 +1,4 @@
-import { StateInterface } from 'src/store';
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue} from 'vue-property-decorator';
 import tableC from 'src/components/tableC';
 import ChartC from 'src/components/chart';
 import {date} from 'quasar'
@@ -90,7 +89,7 @@ export default class DatabasePage extends Vue {
 			headerStyle: 'width: 450px',
 			style: 'max-width: 450px',
 			field: (row: { name: string; }) => row.name,
-			format: (val: any) => `${val}`
+			format: (val: string) => `${val}`
 		},
 		{ name: 'extractor', align: 'left', label: 'Extractor', field: 'extractor', sortable: true },
         { name: 'created', align: 'left', label: 'Fecha', field: 'created', sortable: true },
@@ -117,12 +116,13 @@ export default class DatabasePage extends Vue {
 		.then(response => response.json())
 		.then((data) => {
 			this.realData = []
+			const resData = data.data
 			if (data.data.total != 0){
-				this.pagination.rowsNumber = data.data.total
-				this.pagination.rowsPerPage = data.data.size
+				this.pagination.rowsNumber = resData.total
+				this.pagination.rowsPerPage = resData.size
 				let lista = data.data.list
 				if (lista!=undefined){
-					lista.forEach((comment: { _id: any; hash: any; created: string | number | Date | undefined; extractor: any; metaKey: any; content: any; }) => {
+					lista.forEach((comment: { _id: string; hash: string; created: string | Date | undefined; extractor: string; metaKey: string; content: string; }) => {
 						this.realData.push({
 							_id: comment._id,
 							hash: comment.hash,
@@ -140,7 +140,7 @@ export default class DatabasePage extends Vue {
 		})
 		this.isLoading= false
 	}
-	async onRequest(props: { pagination: any; filter?: null; }){
+	async onRequest(props: { pagination: {sortBy: string, descending: boolean, page: number, rowsPerPage: number, rowsNumber:number}; filter?: null; }){
 		this.isLoading = true
 		const { page, rowsPerPage, sortBy, descending} = props.pagination
 		this.pagination.sortBy = sortBy
@@ -154,7 +154,7 @@ export default class DatabasePage extends Vue {
 		} else {
 			delete this.body.filter.extractor
 		}
-		this.getDataFromDatabase()
+		await this.getDataFromDatabase()
 	}
 	async onClickComment(props: { row: any; }){
 		this.isLoading = true

@@ -9,16 +9,10 @@ export default class statsPage extends Vue {
     isLoadingChart = true
     realData: StatsPage.data[] =[]
     dataChart: StatsPage.DataChart = {
-		labels: [
-
-		],
-		datasets: [
-			{
-				data: [
-
-                ],
-			},
-		],
+		labels: [],
+		datasets: [{
+            data: []
+        }],
 	};
     async getContribTable(){
         await fetch('https://www.gpi.valdomero.live/contributions.json',{
@@ -66,7 +60,7 @@ export default class statsPage extends Vue {
     }
     mounted(){
         void this.getContribTable()
-        this.getPieChartData()
+        void this.getPieChartData()
     }
 }
 export namespace StatsPage{
@@ -75,11 +69,10 @@ export namespace StatsPage{
         contribuciones: number
     }
     export interface Factors {
-		label: string;
 		data: number[];
 	}
 	export interface DataChart {
 		labels: string[];
-		datasets: ResultsPage.Factors[];
+		datasets: StatsPage.Factors[];
 	}
 }
