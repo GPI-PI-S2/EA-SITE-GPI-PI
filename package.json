@@ -8,7 +8,8 @@
 	"scripts": {
 		"lint": "eslint --ext .js,.ts,.vue ./",
 		"serve": "cross-env PLATFORM=development quasar dev",
-		"build": "cross-env PLATFORM=browser quasar build"
+		"build": "cross-env PLATFORM=browser quasar build",
+		"git-update-local": "git remote update origin --prune"
 	},
 	"dependencies": {
 		"@quasar/extras": "^1.0.0",
