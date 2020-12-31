@@ -1,14 +1,13 @@
 import { StateInterface } from 'src/store';
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import ChartC from 'src/components/chart';
-import fetchExtractor from '../extractors/index'
 @Component({
 	components: { ChartC },
 })
 export default class ResultsPage extends Vue {
 	loading=true;
 	step= 1;
-	PromedioFactor: ResultsPage.Indicator[] = [
+	PromedioFactor= [
 		{
 			title: 'Indice de inteligencia emocional',
 			subtitle: 'about 1',
@@ -70,6 +69,7 @@ export default class ResultsPage extends Vue {
 		})
 		.then(response => {return response.json()})
 		.then(data => {
+			this.dataChart.datasets[0].data = []
 			this.dataChart.datasets[0].data.push(data.data.sentiments['asertividad'])
 			this.dataChart.datasets[0].data.push(data.data.sentiments['autoconciencia emocional'])
 			this.dataChart.datasets[0].data.push(data.data.sentiments['autocontrol emocional'])
@@ -90,8 +90,12 @@ export default class ResultsPage extends Vue {
 			this.dataChart.datasets[0].data.push(data.data.sentiments['relación social'])
 			this.dataChart.datasets[0].data.push(data.data.sentiments['tolerancia a la frustración'])
 			this.dataChart.datasets[0].data.push(data.data.sentiments['violencia'])
+			this.step=2
 		})
-		this.step=2
+		.catch((error) =>{
+			this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
+		})
+		this.loading = false
 	}
 	getRandomNumber() {
 		return Math.floor(Math.random() * 15) + 1;
