@@ -5,6 +5,21 @@
 				Database page
 			</div>
 		</div>
+		<div class="full-width row bg-red q-gutter-sm">
+			<div class="col-12">TEST EXTRACTORES</div>
+			<div class="col-12">
+				<q-btn label="deploy" :loading="loading" color="primary" @click="onClickDeploy" />
+			</div>
+			<div class="col-12">
+				<q-btn
+					label="obtain"
+					color="primary"
+					:loading="loading"
+					:disabled="!deployed"
+					@click="onClickObtain"
+				/>
+			</div>
+		</div>
 		<div class="col-12 q-pb-md">
 			<div class="row q-pa-md">
 				<div class="col-12">
