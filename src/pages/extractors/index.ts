@@ -315,6 +315,78 @@ export default class ExtractorsPage extends Vue {
 			this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 		})
 	}
+	async obtainTelegramData(chat: ExtractorsPage.chatsTelegram){
+		this.loading=true
+		console.log(chat)
+		const body: ExtractorsPage.ExtractorData = {
+			id: this.actualId,
+			options:{
+				chatId: chat.id,
+				metaKey: chat.id.toString(),
+				limit: this.limitComments,
+				accessHash: chat.accessHash,
+				type: chat.type
+			}
+		}
+		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain',body).then((data) => {
+			const result: ExtractorsPage.ResultsObtain [] = data.data.data.result
+			const localAverage: ExtractorsPage.ResultsObtain = {
+				input:{
+					content:'Analisis'
+				},
+				sentiments: {
+				'asertividad': 0,
+				'autoconciencia emocional': 0,
+				'autocontrol emocional': 0,
+				'autoestima': 0,
+				'colaboración y cooperación': 0,
+				'comprensión organizativa': 0,
+				'conciencia crítica': 0,
+				'comunicacion asertiva': 0,
+				'desarrollo de las relaciones': 0,
+				'desarrollar y estimular a los demás': 0,
+				'empatía': 0,
+				'influencia':0,
+				'liderazgo':0,
+				'manejo de conflictos': 0,
+				'motivación de logro': 0,
+				'optimismo':0,
+				'percepción y comprensión emocional': 0,
+				'relación social': 0,
+				'tolerancia a la frustración': 0,
+				'violencia': 0
+				}
+			}
+			result.map((comment)=>{
+				localAverage.sentiments.asertividad += comment.sentiments.asertividad
+				localAverage.sentiments['autoconciencia emocional']+=comment.sentiments['autoconciencia emocional']
+				localAverage.sentiments['autocontrol emocional']+=comment.sentiments['autocontrol emocional']
+				localAverage.sentiments['autoestima']+=comment.sentiments['autoestima']
+				localAverage.sentiments['colaboración y cooperación']+=comment.sentiments['colaboración y cooperación']
+				localAverage.sentiments['comprensión organizativa']+=comment.sentiments['comprensión organizativa']
+				localAverage.sentiments['conciencia crítica']+=comment.sentiments['conciencia crítica']
+				localAverage.sentiments['comunicacion asertiva']+=comment.sentiments['comunicacion asertiva']
+				localAverage.sentiments['desarrollo de las relaciones']+=comment.sentiments['desarrollo de las relaciones']
+				localAverage.sentiments['desarrollar y estimular a los demás']+=comment.sentiments['desarrollar y estimular a los demás']
+				localAverage.sentiments.empatía+=comment.sentiments.empatía
+				localAverage.sentiments.influencia+=comment.sentiments.influencia
+				localAverage.sentiments.liderazgo+=comment.sentiments.liderazgo
+				localAverage.sentiments['manejo de conflictos']+=comment.sentiments['manejo de conflictos']
+				localAverage.sentiments['motivación de logro']+=comment.sentiments['motivación de logro']
+				localAverage.sentiments.optimismo+=comment.sentiments.optimismo
+				localAverage.sentiments['percepción y comprensión emocional']+=comment.sentiments['percepción y comprensión emocional']
+				localAverage.sentiments['relación social']+=comment.sentiments['relación social']
+				localAverage.sentiments['tolerancia a la frustración']+=comment.sentiments['tolerancia a la frustración']
+				localAverage.sentiments.violencia+=comment.sentiments.violencia
+			})
+			this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map((factor)=>{return (factor/result.length)})
+			this.loading = false
+			this.step=2
+		})
+		.catch((error: ExtractorsPage.ErrorType)=>{
+			this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
+		})
+	}
 	@Watch('codeConfirmation')
 	onChangeCodeConfirmation(c: string){
 		this.codeConfirmation = c
@@ -335,13 +407,6 @@ export namespace ExtractorsPage {
 		id: string;
 		icon: string;
 		color: string;
-	}
-	export interface Chat {
-		id: number;
-		type: string;
-		name: string;
-		accessHash: string;
-		icon: string;
 	}
 	export interface Factors {
 		label: string;
@@ -373,6 +438,9 @@ export namespace ExtractorsPage {
 			phone?: string;
 			code?: string;
 			codeHash?: string;
+			type?: string;
+			accessHash?: string;
+			chatId?: number;
 		};
 	}
 	export interface ResultsObtain{
