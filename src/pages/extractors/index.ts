@@ -1,8 +1,6 @@
-import { QSpinnerGears } from 'quasar';
 import ChartC from 'src/components/chart';
 import InputC from 'src/components/InputC';
 import { StateInterface } from 'src/store';
-import { ITelegram, Response } from 'src/types';
 import { Component, Vue, Watch } from 'vue-property-decorator';
 
 @Component({
@@ -22,22 +20,22 @@ export default class ExtractorsPage extends Vue {
 	registered = false;
 	pending = false;
 	metakey = '';
-	metaReddit!: ExtractorsPage.RedditMeta;
 	urlYoutube = '';
 	codeConfirmation = '';
 	average!: ExtractorsPage.ResultsObtain;
-	PromedioFactor: ExtractorsPage.Indicator[] = [
-		{
-			title: 'Coeficiente emocional',
-			subtitle: 'about promedio1',
-			value: 1234,
-		},
-		{
-			title: 'Capital intelectual',
-			subtitle: 'about promedio2',
-			value: 4321,
-		},
-	];
+	PromedioFactor: ExtractorsPage.Indicator[] = [];
+	// PromedioFactor: ExtractorsPage.Indicator[] = [
+	// 	{
+	// 		title: 'Coeficiente emocional',
+	// 		subtitle: 'about promedio1',
+	// 		value: 1234,
+	// 	},
+	// 	{
+	// 		title: 'Capital intelectual',
+	// 		subtitle: 'about promedio2',
+	// 		value: 4321,
+	// 	},
+	// ];
 	dataChart: ExtractorsPage.DataChart = {
 		labels: [
 			'Asertividad',
@@ -110,7 +108,6 @@ export default class ExtractorsPage extends Vue {
 	];
 	mounted() {
 		const state = this.$store.state as StateInterface;
-
 		this.apiKeyYoutube = state.app.apiKeyYoutube;
 		this.apiKeyTwitter = state.app.apiKeyTwitter;
 		this.phoneNumber = state.app.phoneNumber;
@@ -134,65 +131,21 @@ export default class ExtractorsPage extends Vue {
 				return true;
 		}
 	}
-	// getRandomNumber() {
-	// 	return Math.floor(Math.random() * 15) + 1;
-	// }
-	// Datos de prueba para el chart
-	// getChartInfo() {
-	// 	this.dataChart = {
-	// 		labels: [
-	// 			'Asertividad',
-	// 			'Autoconsciencia emocional',
-	// 			'Autocontrol emocional',
-	// 			'Autoestima',
-	// 			'Colaboración y cooperación',
-	// 			'Comprensión organizativa',
-	// 			'Consciencia crítica',
-	// 			'Comunicacion asertiva',
-	// 			'Desarrollo de las relaciones',
-	// 			'Desarrollar y estimular a los demás',
-	// 			'Empatía',
-	// 			'Influencia',
-	// 			'Liderazgo',
-	// 			'Manejo de conflictos',
-	// 			'Motivación de logro',
-	// 			'Optimismo',
-	// 			'Percepción y comprensión Emocional',
-	// 			'Relación social',
-	// 			'Tolerancia a la frustración',
-	// 			'Violencia',
-	// 		],
-	// 		datasets: [
-	// 			{
-	// 				label: 'Factores emocionales',
-	// 				data: [],
-	// 			},
-	// 		],
-	// 	};
-	// 	for (let e = 0; e <= 19; e++) {
-	// 		this.dataChart.datasets[0].data.push(this.getRandomNumber());
-	// 	}
-	// }
-	fetchExtractor<Response extends Response.Generic>(
-		url: string,
-		bodyToSend: ExtractorsPage.ExtractorData,
-	): Promise<Response> {
-		return new Promise<Response>(async (r, e) => {
-			try {
-				const response = await fetch(url, {
-					method: 'POST',
-					credentials: 'include',
-					headers: {
-						'Content-type': 'application/json',
-						'X-API-KEY': 'rayaparalasuma',
-					},
-					body: JSON.stringify(bodyToSend),
-				});
-				const jsonRes = (await response.json()) as Response.Generic;
-				if (response.status === 200) return r(jsonRes as never);
-				else throw new Error(jsonRes as string);
-			} catch (error) {
-				return e(error);
+	async fetchExtractor(url: string, bodyToSend: ExtractorsPage.ExtractorData) {
+		return fetch(url, {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-type': 'application/json',
+				'X-API-KEY': 'rayaparalasuma',
+			},
+			body: JSON.stringify(bodyToSend),
+		}).then(response => {
+			const res = response.json();
+			if (response.status == 200) {
+				return res;
+			} else {
+				return res.then(Promise.reject.bind(Promise));
 			}
 		});
 	}
@@ -200,28 +153,7 @@ export default class ExtractorsPage extends Vue {
 		this.loading = true;
 		if (this.actualId == 'telegram-extractor' && this.pending == true) {
 			this.actualId = id;
-			const dismiss = this.$q.notify({
-				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Solicitando los datos..',
-			});
-
-			const response = await this.fetchExtractor<Response.Ok<ITelegram.Deploy.Response>>(
-				'https://www.gpi.valdomero.live/api/v1/extractors/deploy',
-				{
-					id: this.actualId,
-					config: {
-						apiId: 1862196,
-						apiHash: 'ecf4f984d701a3ee7a909d0c505d2df5',
-					},
-					options: {
-						phone: this.phoneNumber,
-						code: this.codeConfirmation,
-						codeHash: this.codeHash,
-					},
-				},
-			);
-			/*  if(response.)
-			await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/deploy', {
+			await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy', {
 				id: this.actualId,
 				config: {
 					apiId: 1862196,
@@ -234,8 +166,6 @@ export default class ExtractorsPage extends Vue {
 				},
 			})
 				.then(data => {
-					console.log(data);
-					console.log('afuera');
 					const telegramResponse: ExtractorsPage.telegramRes = data.data;
 					console.log(telegramResponse);
 					if (telegramResponse.data.chats) {
@@ -252,53 +182,33 @@ export default class ExtractorsPage extends Vue {
 					this.pending = false;
 					this.registered = true;
 				})
-				.catch(error => {
+				.catch((error: ExtractorsPage.ErrorType) => {
 					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-				}); */
-			dismiss();
-			this.loading = false;
-		} else {
-			try {
-				this.actualId = id;
-				const dismiss = this.$q.notify({
-					spinner: (QSpinnerGears as unknown) as Vue,
-					message: 'Inicializando...',
 				});
-				await this.fetchExtractor(
-					'https://www.gpi.valdomero.live/api/v1/extractors/deploy',
-					{
-						id: this.actualId,
-						config: {
-							bearerToken:
-								this.actualId == 'twitter-extractor'
-									? this.apiKeyTwitter
-									: undefined,
-							apiId: this.actualId == 'telegram-extractor' ? 1862196 : undefined,
-							apiHash:
-								this.actualId == 'telegram-extractor'
-									? 'ecf4f984d701a3ee7a909d0c505d2df5'
-									: undefined,
-							apiKey:
-								this.actualId == 'youtube-extractor'
-									? this.apiKeyYoutube
-									: undefined,
-						},
-						options: {
-							phone:
-								this.actualId == 'telegram-extractor'
-									? this.phoneNumber
-									: undefined,
-						},
-					},
-				)
-					.then(data => {
-						if (this.actualId == 'telegram-extractor') {
-							const telegramResponse: ExtractorsPage.telegramRes = data.data;
-							if (telegramResponse.status == 2) {
-								if (telegramResponse.data.codeHash) {
-									this.codeHash = telegramResponse.data.codeHash;
-								}
-								this.pending = true;
+		} else {
+			this.actualId = id;
+			await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy', {
+				id: this.actualId,
+				config: {
+					bearerToken:
+						this.actualId == 'twitter-extractor' ? this.apiKeyTwitter : undefined,
+					apiId: this.actualId == 'telegram-extractor' ? 1862196 : undefined,
+					apiHash:
+						this.actualId == 'telegram-extractor'
+							? 'ecf4f984d701a3ee7a909d0c505d2df5'
+							: undefined,
+					apiKey: this.actualId == 'youtube-extractor' ? this.apiKeyYoutube : undefined,
+				},
+				options: {
+					phone: this.actualId == 'telegram-extractor' ? this.phoneNumber : undefined,
+				},
+			})
+				.then(data => {
+					if (this.actualId == 'telegram-extractor') {
+						const telegramResponse: ExtractorsPage.telegramRes = data.data;
+						if (telegramResponse.status == 2) {
+							if (telegramResponse.data.codeHash) {
+								this.codeHash = telegramResponse.data.codeHash;
 							}
 							if (telegramResponse.status == 3) {
 								if (telegramResponse.data.chats) {
@@ -317,19 +227,24 @@ export default class ExtractorsPage extends Vue {
 								this.loading = false;
 							}
 						}
-						this.step = 1;
-					})
-					.catch(error => {
-						this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-					});
-				dismiss();
-			} catch (error) {
-				console.log(error);
-			}
+					}
+					this.step = 1;
+				})
+				.catch((error: ExtractorsPage.ErrorType) => {
+					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
+				});
 		}
 		this.loading = false;
 	}
 	async obtainExtractorData() {
+		this.loading = true;
+		const body: ExtractorsPage.ExtractorData = {
+			id: this.actualId,
+			options: {
+				limit: this.limitComments,
+				minSentenceSize: 3,
+			},
+		};
 		if (this.actualId == 'reddit-extractor') {
 			const cURL = new URL(this.metakey);
 			const paths = cURL.pathname.split('/');
@@ -337,37 +252,92 @@ export default class ExtractorsPage extends Vue {
 			const subRedditlocal = paths[2];
 			const postIdlocal = paths[4];
 			if (!subRedditlocal || !postIdlocal) throw new Error('Subreddit o PostId Inválido');
-			this.metaReddit = {
-				postId: postIdlocal,
-				subReddit: subRedditlocal,
-			};
+			else {
+				(body.options.metaKey = `{${subRedditlocal},${postIdlocal}}`),
+					(body.options.postId = postIdlocal);
+				body.options.subReddit = subRedditlocal;
+			}
 		} else if (this.actualId == 'youtube-extractor') {
-			this.metakey = this.urlYoutube.split('v=')[1].substring(0, 11);
-			console.log(this.metakey);
-		} else if (this.actualId == 'telegram-extractor') {
-			console.log(this.metakey);
+			body.options.metaKey = this.urlYoutube.split('v=')[1].substring(0, 11);
+		} else {
+			body.options.metaKey = this.metakey;
 		}
-		await this.fetchExtractor('https://www.gpi.valdomero.live/api/v1/extractors/obtain', {
-			id: this.actualId,
-			// config: {
-			// apiId: this.actualId=='telegram-extractor' ? 1862196 : undefined,
-			// apiHash: this.actualId=='telegram-extractor' ? 'ecf4f984d701a3ee7a909d0c505d2df5' : undefined
-			// },
-			options: {
-				limit: this.limitComments,
-				minSentenceSize: 3,
-				// code: this.actualId=='telegram-extractor' ? this.codeConfirmation : undefined,
-				// codeHash: this.actualId=='telegram-extractor' ? this.codeHash : undefined,
-				// phone: this.actualId=='telegram-extractor' ? this.phoneNumber : undefined,
-				metaKey:
-					this.actualId == 'reddit-extractor'
-						? `{${this.metaReddit.subReddit},${this.metaReddit.postId}}`
-						: this.metakey,
-				// metaKey: 'cTaBZ_CD9Ts'
-				// postId: this.actualId=='reddit-extractor' ? this.metaReddit.postId : undefined,
-				// subReddit: this.actualId=='reddit-extractor' ? this.metaReddit.subReddit : undefined,
-			},
-		})
+		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain', body)
+			.then(data => {
+				const result: ExtractorsPage.ResultsObtain[] = data.data.data.result;
+				const localAverage: ExtractorsPage.ResultsObtain = {
+					input: {
+						content: 'Analisis',
+					},
+					sentiments: {
+						asertividad: 0,
+						'autoconciencia emocional': 0,
+						'autocontrol emocional': 0,
+						autoestima: 0,
+						'colaboración y cooperación': 0,
+						'comprensión organizativa': 0,
+						'conciencia crítica': 0,
+						'comunicacion asertiva': 0,
+						'desarrollo de las relaciones': 0,
+						'desarrollar y estimular a los demás': 0,
+						empatía: 0,
+						influencia: 0,
+						liderazgo: 0,
+						'manejo de conflictos': 0,
+						'motivación de logro': 0,
+						optimismo: 0,
+						'percepción y comprensión emocional': 0,
+						'relación social': 0,
+						'tolerancia a la frustración': 0,
+						violencia: 0,
+					},
+				};
+				result.map(comment => {
+					localAverage.sentiments.asertividad += comment.sentiments.asertividad;
+					localAverage.sentiments['autoconciencia emocional'] +=
+						comment.sentiments['autoconciencia emocional'];
+					localAverage.sentiments['autocontrol emocional'] +=
+						comment.sentiments['autocontrol emocional'];
+					localAverage.sentiments['autoestima'] += comment.sentiments['autoestima'];
+					localAverage.sentiments['colaboración y cooperación'] +=
+						comment.sentiments['colaboración y cooperación'];
+					localAverage.sentiments['comprensión organizativa'] +=
+						comment.sentiments['comprensión organizativa'];
+					localAverage.sentiments['conciencia crítica'] +=
+						comment.sentiments['conciencia crítica'];
+					localAverage.sentiments['comunicacion asertiva'] +=
+						comment.sentiments['comunicacion asertiva'];
+					localAverage.sentiments['desarrollo de las relaciones'] +=
+						comment.sentiments['desarrollo de las relaciones'];
+					localAverage.sentiments['desarrollar y estimular a los demás'] +=
+						comment.sentiments['desarrollar y estimular a los demás'];
+					localAverage.sentiments.empatía += comment.sentiments.empatía;
+					localAverage.sentiments.influencia += comment.sentiments.influencia;
+					localAverage.sentiments.liderazgo += comment.sentiments.liderazgo;
+					localAverage.sentiments['manejo de conflictos'] +=
+						comment.sentiments['manejo de conflictos'];
+					localAverage.sentiments['motivación de logro'] +=
+						comment.sentiments['motivación de logro'];
+					localAverage.sentiments.optimismo += comment.sentiments.optimismo;
+					localAverage.sentiments['percepción y comprensión emocional'] +=
+						comment.sentiments['percepción y comprensión emocional'];
+					localAverage.sentiments['relación social'] +=
+						comment.sentiments['relación social'];
+					localAverage.sentiments['tolerancia a la frustración'] +=
+						comment.sentiments['tolerancia a la frustración'];
+					localAverage.sentiments.violencia += comment.sentiments.violencia;
+				});
+				this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map(
+					factor => {
+						return factor / result.length;
+					},
+				);
+				this.loading = false;
+				this.step = 2;
+			})
+			.catch((error: ExtractorsPage.ErrorType) => {
+				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
+			})
 			.then(data => {
 				const result: ExtractorsPage.ResultsObtain[] = data.data.data.results;
 				const localAverage: ExtractorsPage.ResultsObtain = {
@@ -480,7 +450,7 @@ export namespace ExtractorsPage {
 	}
 	export interface Indicator {
 		title: string;
-		subtitle: string;
+		subtitle?: string;
 		value: number;
 	}
 	export interface ExtractorData {
@@ -548,5 +518,10 @@ export namespace ExtractorsPage {
 	export interface RedditMeta {
 		postId: string;
 		subReddit: string;
+	}
+	export interface ErrorType {
+		type: string;
+		message: string;
+		data: string[];
 	}
 }
