@@ -67,7 +67,6 @@ export default class statsPage extends Vue {
     mounted(){
         void this.getContribTable()
         this.getPieChartData()
-        console.log(this.dataChart)
     }
 }
 export namespace StatsPage{

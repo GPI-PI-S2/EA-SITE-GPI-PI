@@ -105,8 +105,6 @@ export default class DatabasePage extends Vue {
 		}
 	}
 	async getDataFromDatabase(){
-		console.log(this.body)
-		console.log(this.pagination)
 		await fetch('http://localhost:8000/api/v1/db/entry/list',{
 			method: 'POST',
 			credentials:'include',
@@ -124,7 +122,7 @@ export default class DatabasePage extends Vue {
 				this.pagination.rowsPerPage = data.data.size
 				let lista = data.data.list
 				if (lista!=undefined){
-					lista.forEach(comment => {
+					lista.forEach((comment: { _id: any; hash: any; created: string | number | Date | undefined; extractor: any; metaKey: any; content: any; }) => {
 						this.realData.push({
 							_id: comment._id,
 							hash: comment.hash,
@@ -142,7 +140,7 @@ export default class DatabasePage extends Vue {
 		})
 		this.isLoading= false
 	}
-	async onRequest(props){
+	async onRequest(props: { pagination: any; filter?: null; }){
 		this.isLoading = true
 		const { page, rowsPerPage, sortBy, descending} = props.pagination
 		this.pagination.sortBy = sortBy
@@ -161,7 +159,6 @@ export default class DatabasePage extends Vue {
 	async onClickComment(props: { row: any; }){
 		this.isLoading = true
 		const rowData = props.row
-		console.log(rowData)
 		await fetch('http://localhost:8000/api/v1/db/anal/fetch',{
 			method: 'POST',
 			credentials:'include',

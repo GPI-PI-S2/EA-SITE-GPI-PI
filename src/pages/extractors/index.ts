@@ -110,7 +110,6 @@ export default class ExtractorsPage extends Vue {
 	];
 	mounted() {
 		const state = this.$store.state as StateInterface;
-
 		this.apiKeyYoutube = state.app.apiKeyYoutube;
 		this.apiKeyTwitter = state.app.apiKeyTwitter;
 		this.phoneNumber = state.app.phoneNumber;
@@ -158,10 +157,6 @@ export default class ExtractorsPage extends Vue {
 		this.loading = true;
 		if (this.actualId=='telegram-extractor' && this.pending==true){
 			this.actualId = id;
-			const dismiss = this.$q.notify({
-				spinner: (QSpinnerGears as unknown) as Vue,
-				message: 'Solicitando los datos..',
-			});
 			await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy',{
 				id: this.actualId,
 				config: {
@@ -192,8 +187,6 @@ export default class ExtractorsPage extends Vue {
 			}).catch((error) =>{
 				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 			})
-			dismiss();
-			this.loading = false
 		} else {
 			try {
 				this.actualId = id;
@@ -209,10 +202,6 @@ export default class ExtractorsPage extends Vue {
 							phone: this.actualId=='telegram-extractor' ? this.phoneNumber : undefined,
 						}
 				}).then((data) => {
-					const dismiss = this.$q.notify({
-						spinner: (QSpinnerGears as unknown) as Vue,
-						message: 'Inicializando...',
-					});
 					if (this.actualId=='telegram-extractor'){
 						const telegramResponse:ExtractorsPage.telegramRes = data.data
 						if (telegramResponse.status==2){
@@ -242,7 +231,6 @@ export default class ExtractorsPage extends Vue {
 					console.log(error)
 					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.`});
 				})
-				
 			} catch (error){
 				console.log(error)
 			}
@@ -250,6 +238,7 @@ export default class ExtractorsPage extends Vue {
 		this.loading = false
 	}
 	async obtainExtractorData(){
+		this.loading = true
 		let body: ExtractorsPage.ExtractorData = {
 			id: this.actualId,
 			options:{
@@ -271,20 +260,10 @@ export default class ExtractorsPage extends Vue {
 			}
 		} else if (this.actualId=='youtube-extractor'){
 			body.options.metaKey = this.urlYoutube.split('v=')[1].substring(0,11)
-		} else if (this.actualId=='telegram-extractor'){
-			console.log(this.metakey)
-		} else if (this.actualId=='emol-extractor'){
-			body.options.metaKey = this.metakey
-		} else if (this.actualId=='twitter-extractor'){
+		} else {
 			body.options.metaKey = this.metakey
 		}
-		const dismiss = this.$q.notify({
-			spinner: (QSpinnerGears as unknown) as Vue,
-			message: 'Solicitando los datos..',
-		});
-		dismiss();
 		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain',body).then((data) =>{
-			this.loading = true
 			const result: ExtractorsPage.ResultsObtain [] = data.data.data.result
 			const localAverage: ExtractorsPage.ResultsObtain = {
 				input:{
@@ -335,12 +314,7 @@ export default class ExtractorsPage extends Vue {
 				localAverage.sentiments['tolerancia a la frustración']+=comment.sentiments['tolerancia a la frustración']
 				localAverage.sentiments.violencia+=comment.sentiments.violencia
 			})
-			// this.PromedioFactor.push({
-			// 	title: 'Indice de capital emocional',
-			// 	value: localAverage.sentiments.autoestima + localAverage.sentiments['autoconciencia emocional'] + localAverage.sentiments['motivación de logro']+ localAverage.sentiments.
-			// })
 			this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map((factor)=>{return (factor/result.length)})
-			dismiss();
 			this.loading = false
 			this.step=2
 		})
