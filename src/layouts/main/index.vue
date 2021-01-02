@@ -31,8 +31,16 @@
 						</q-item>
 					</q-list>
 					<q-separator vertical />
-					<div class="col-grow" :style="{ width: `calc(99% - ${menuWidth})` }">
-						<router-view />
+					<div
+						class="col-grow"
+						:style="{ width: `calc(99% - ${menuWidth})`, position: 'relative' }"
+					>
+						<q-inner-loading :showing="loader.show" :style="{ zIndex: '1' }">
+							<h5 class="text-weight-light text-uppercase">{{ loader.message }}</h5>
+							<q-spinner-gears size="xl" color="primary" />
+						</q-inner-loading>
+
+						<router-view v-show="!loader.show" />
 					</div>
 				</div>
 			</q-card>

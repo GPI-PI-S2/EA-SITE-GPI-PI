@@ -1,5 +1,5 @@
-import ChartC from 'src/components/chart';
-import InputC from 'src/components/InputC';
+import ChartC from 'src/components/old_chart';
+import InputC from 'src/components/old_InputC';
 import { StateInterface } from 'src/store';
 import { Component, Vue, Watch } from 'vue-property-decorator';
 

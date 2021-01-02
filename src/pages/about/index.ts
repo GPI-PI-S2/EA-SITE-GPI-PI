@@ -1,5 +1,36 @@
 import arquiTabla from 'assets/about/arqui-tabla.png';
+import alisteR from 'assets/members/alisteR.jpg';
+import andrewsN from 'assets/members/andrewsN.png';
+import avendanoJ from 'assets/members/avendanoJ.jpeg';
+import barcazaG from 'assets/members/barcazaG.jpg';
+import caceresM from 'assets/members/caceresM.jpg';
+import cajasD from 'assets/members/cajasD.jpg';
+import carmonaL from 'assets/members/carmonaL.jpeg';
+import carmonaR from 'assets/members/carmonaR.jpg';
+import carterH from 'assets/members/carterH.jpg';
+import carvalloJ from 'assets/members/carvalloJ.jpg';
+import diazB from 'assets/members/diazB.jpg';
+import floresC from 'assets/members/floresC.jpeg';
+import floresF from 'assets/members/floresF.jpg';
+import fonceaY from 'assets/members/fonceaY.jpeg';
+import fredesD from 'assets/members/fredesD.png';
+import gallardoM from 'assets/members/gallardoM.png';
+import galvesJ from 'assets/members/galvesJ.jpg';
+import garridoS from 'assets/members/garridoS.jpg';
+import gorayebM from 'assets/members/gorayebM.jpg';
+import janaL from 'assets/members/janaL.png';
+import martinezB from 'assets/members/martinezB.jpg';
+import moralesA from 'assets/members/moralesA.jpg';
+import perezI from 'assets/members/perezI.jpg';
+import perezS from 'assets/members/perezS.jpg';
+import ramirezI from 'assets/members/ramirezI.jpg';
+import romanH from 'assets/members/romanH.jpg';
+import sepulvedaD from 'assets/members/sepulvedaD.png';
+import sisinniD from 'assets/members/sisinniD.jpg';
+import vasquezL from 'assets/members/vasquezL.jpg';
+import wongS from 'assets/members/wongS.jpg';
 import { Component, Vue } from 'vue-property-decorator';
+
 @Component
 export default class AboutPage extends Vue {
 	readonly imgArquiTabla = arquiTabla;
@@ -37,30 +68,28 @@ export default class AboutPage extends Vue {
 			integrantes: [
 				{
 					name: 'Diego Sepúlveda',
-					img:
-						'https://i.imgur.com/D6Sjc06.png',
+					img: sepulvedaD,
 					lider: true,
 					extra: 'Jefe de proyecto',
 					email: 'diego.sepulvedas@utem.cl',
 				},
 				{
 					name: 'Daniel Fredes Lizama',
-					img: 'https://avatars1.githubusercontent.com/u/72327723?s=460&u=71afedeadab1bd5327c690e5a89566ee98ec18a9&v=4',
+					img: fredesD,
 					lider: true,
 					extra: 'Líder de desarrollo',
 					email: 'daniel.fredesl@utem.cl',
 				},
 				{
 					name: 'Mathias Cáceres',
-					img: 'https://i.imgur.com/wTp6Dlz.jpg?1',
+					img: caceresM,
 					lider: true,
 					extra: 'Líder de investigación',
 					email: 'mathias.caceresb@utem.cl',
 				},
 				{
 					name: 'Israel Ramirez',
-					img:
-						'https://scontent.fscl15-1.fna.fbcdn.net/v/t1.0-9/32381025_10209606525034580_6105904243057623040_n.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=ex0Vv1_pzUoAX8QlsPq&_nc_ht=scontent.fscl15-1.fna&oh=8b0f63f7b99ed6b7c21cfc21e3b3b7e7&oe=5FF3998B',
+					img: ramirezI,
 					lider: true,
 					extra: 'Líder de documentación',
 					email: 'israel.ramirezc@utem.cl',
@@ -79,49 +108,49 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Nicolás Andrews',
-					img: 'https://cdn.discordapp.com/attachments/666791661363265536/785603323276951582/Untitled.png',
+					img: andrewsN,
 					lider: false,
 					extra: '',
 					email: 'nicolas.andrewss@utem.cl',
 				},
 				{
 					name: 'Daniel Cajas',
-					img: 'https://i.imgur.com/VbtXjrM.jpg?1',
+					img: cajasD,
 					lider: false,
 					extra: '',
 					email: 'daniel0cajas@gmail.com',
 				},
 				{
 					name: 'Rodrigo Carmona',
-					img: 'https://i.imgur.com/5uOga6a.jpg',
+					img: carmonaR,
 					lider: false,
 					extra: '',
 					email: 'rodrigo.carmonar@utem.cl',
 				},
 				{
 					name: 'Hector Carter',
-					img: 'https://i.imgur.com/765Fzg7.jpg',
+					img: carterH,
 					lider: false,
 					extra: '',
 					email: 'hector.carterc@utem.cl',
 				},
 				{
 					name: 'Byron Diaz',
-					img: 'https://i.imgur.com/Sz6Vz6X.jpg',
+					img: diazB,
 					lider: false,
 					extra: '',
 					email: 'byron.diazj@utem.cl',
 				},
 				{
 					name: 'Miguel Gallardo',
-					img: 'https://i.imgur.com/4mGG0LS.png?1',
+					img: gallardoM,
 					lider: false,
 					extra: '',
 					email: 'Miguel.and.gallardo@gmail.com',
 				},
 				{
 					name: 'Allan Morales',
-					img: 'https://i.imgur.com/SJo1R1p.jpg?1',
+					img: moralesA,
 					lider: false,
 					extra: '',
 					email: 'allan.moralesp@utem.cl',
@@ -135,21 +164,21 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Humberto Román',
-					img: 'https://i.imgur.com/ZxvLo8o.jpg',
+					img: romanH,
 					lider: false,
 					extra: '',
 					email: 'humberto.romanm@utem.cl',
 				},
 				{
 					name: 'Lester Vásquez',
-					img: 'https://i.imgur.com/QL1qWQS.jpg',
+					img: vasquezL,
 					lider: false,
 					extra: '',
 					email: 'lester.vasquezr@utem.cl',
 				},
 				{
 					name: 'Shu-yi Wong',
-					img: 'https://scontent.fscl18-1.fna.fbcdn.net/v/t1.0-9/92728559_10222990941385963_5028443007444058112_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=NPAeli0-eNAAX-CRW90&_nc_ht=scontent.fscl18-1.fna&oh=df7c2564a93aff5e735a975805ac7e27&oe=5FF2851F',
+					img: wongS,
 					lider: false,
 					extra: '',
 					email: 'shu-yi.wongb@utem.cl',
@@ -168,22 +197,21 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Sebastian Pérez',
-					img: 'https://i.imgur.com/JzvEK4j.jpg',
+					img: perezS,
 					lider: false,
 					extra: 'El pixula',
 					email: 'sebastian.perezb@utem.cl',
 				},
 				{
 					name: 'Luis Felipe Jaña',
-					img: 'https://avatars0.githubusercontent.com/u/32202571?s=400&u=b8366a382d24b4c72a0d00c5bced9fa699450edc&v=4',
+					img: janaL,
 					lider: false,
 					extra: '',
 					email: 'luis.janag@utem.cl',
 				},
 				{
 					name: 'Juan Avendaño',
-					img:
-						'https://media-exp1.licdn.com/dms/image/C4E03AQGac_oyUvM8iw/profile-displayphoto-shrink_400_400/0?e=1613001600&v=beta&t=mMl6lU1-jtQbc0MCmYyw3HHEfsyEPLnw2ILUils07tk',
+					img: avendanoJ,
 					lider: false,
 					extra: '',
 					email: 'juan.avendanon@utem.cl',
@@ -195,7 +223,7 @@ export default class AboutPage extends Vue {
 			integrantes: [
 				{
 					name: 'Ricardo Aliste',
-					img: 'https://i.imgur.com/0GqqJiM.jpg',
+					img: alisteR,
 					lider: false,
 					extra: 'https://i.imgur.com/0GqqJiM.jpg',
 					email: 'ricardo.alisteg@utem.cl',
@@ -209,72 +237,70 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Gonzalo Barcaza',
-					img: 'https://i.imgur.com/YMwi9et.jpg',
+					img: barcazaG,
 					lider: false,
 					extra: '',
 					email: 'gonzalo.barcazat@utem.cl',
 				},
 				{
 					name: 'Lucas Carmona',
-					img: 'https://i.imgur.com/K4Witgw.jpeg',
+					img: carmonaL,
 					lider: false,
 					extra: '',
 					email: 'lucas.carmonam@utem.cl',
 				},
 				{
 					name: 'José Carvallo',
-					img:
-						'https://bn02pap001files.storage.live.com/y4mppgDmqhOeCz_xDCXkdA49LAqNR5lBba_6sMx35CurkWQN4YPNfAinqMacKNaJVa-xkS8f_nZXct8Maw8f66fdhXPbVQcsdO6Oj1UgGTHQalfgm5hQDk20RbnAS9pfaomxLy9pkXg5kDx_-C-h89JbWPjDeYiX8U18bayc6LNzt3ZBf_65aE8Xhx0ssGE74OxlY2HlWFPIR63c7vKC7XHJg/2018-09-28%20Foto%20de%20Perfil%20Cuadrado.jpg?psid=1&width=720&height=720&cropMode=center',
+					img: carvalloJ,
 					lider: false,
 					extra: '',
 					email: 'JoseCarvalloxc@outlook.cl',
 				},
 				{
 					name: 'Cristian Flores',
-					img: 'https://i.imgur.com/1lCgg4x.jpeg',
+					img: floresC,
 					lider: false,
 					extra: '',
 					email: 'cristian.floresa@utem.cl',
 				},
 				{
 					name: 'Felipe Flores',
-					img: 'https://i.imgur.com/qgiATc1.jpg?1',
+					img: floresF,
 					lider: false,
 					extra: '',
 					email: 'fuerte.felipe@gmail.com',
 				},
 				{
 					name: 'Yerko Foncea',
-					img: 'https://i.imgur.com/iwsOCDp.jpeg',
+					img: fonceaY,
 					lider: false,
 					extra: 'https://i.imgur.com/iwsOCDp.jpg',
 					email: 'yerko.fonceac@utem.cl',
 				},
 				{
 					name: 'Javier Gálves',
-					img: 'https://scontent.fscl26-1.fna.fbcdn.net/v/t31.0-8/202528_103009999848276_1941411796_o.jpg?_nc_cat=100&ccb=2&_nc_sid=09cbfe&_nc_ohc=tdhktYsbMw0AX8BIpbL&_nc_ht=scontent.fscl26-1.fna&oh=d7ebfa4a45d5eac0fd15eb5caa395c5a&oe=5FF3A00F',
+					img: galvesJ,
 					lider: false,
 					extra: '',
 					email: 'javier.galvezg@utem.cl',
 				},
 				{
 					name: 'Sebastian Garrido',
-					img:
-						'https://scontent.fscl26-1.fna.fbcdn.net/v/t1.0-9/51748952_2302481043343000_5662803685583880192_o.jpg?_nc_cat=110&ccb=2&_nc_sid=174925&_nc_ohc=sbFDtI9zjWkAX_7m98N&_nc_ht=scontent.fscl26-1.fna&oh=8c2ae77fe1a97969116328354ed68ff5&oe=5FF164F8',
+					img: garridoS,
 					lider: false,
 					extra: '',
 					email: 'sebastian.garridov@utem.cl',
 				},
 				{
 					name: 'Mohamed Gorayeb',
-					img: 'https://i.imgur.com/hXGISkB.jpg',
+					img: gorayebM,
 					lider: false,
 					extra: '',
 					email: 'mohamed.gorayebm@utem.cl',
 				},
 				{
 					name: 'Benjamín Martinez',
-					img: 'https://i.imgur.com/JHnkkcB.jpg',
+					img: martinezB,
 					lider: false,
 					extra: '',
 					email: 'benjamin.martinezg@utem.cl',
@@ -288,14 +314,14 @@ export default class AboutPage extends Vue {
 				},
 				{
 					name: 'Ivan Pérez',
-					img: 'https://scontent.fscl29-1.fna.fbcdn.net/v/t1.0-9/82937988_2811728638848360_9123587087436611584_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=AzDfLiCWiAYAX9aCBJu&_nc_ht=scontent.fscl29-1.fna&oh=f2ba4f72dd2ffa597c4bf8c5d1697221&oe=5FF4662F',
+					img: perezI,
 					lider: false,
 					extra: '',
 					email: 'ivan.perez.alarcon@utem.cl',
 				},
 				{
 					name: 'Daniel Sisinni',
-					img: 'https://i.imgur.com/nCQwfAH.jpg',
+					img: sisinniD,
 					lider: false,
 					extra: '',
 					email: 'diss_metal95@hotmail.com',

@@ -1,78 +1,66 @@
-import { Vue, Component} from 'vue-property-decorator';
-import tableC from 'src/components/tableC';
-import ChartC from 'src/components/chart';
+import { api } from 'src/boot/api';
+import pieChart from 'src/components/charts/pie';
+import ChartC from 'src/components/old_chart';
+import tableC from 'src/components/old_tableC';
+import { ApiService } from 'src/controllers/api/ApiService';
+import { CustomError } from 'src/controllers/CustomError';
+import { MainLayout } from 'src/layouts/main';
+import { Component, Inject, Vue } from 'vue-property-decorator';
 @Component({
-	components: { tableC, ChartC },
+	components: { tableC, ChartC, pieChart },
 })
 export default class statsPage extends Vue {
-    isLoading = true
-    isLoadingChart = true
-    realData: StatsPage.data[] =[]
-    dataChart: StatsPage.DataChart = {
-		labels: [],
-		datasets: [{
-            data: []
-        }],
-	};
-    async getContribTable(){
-        await fetch('https://www.gpi.valdomero.live/contributions.json',{
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then((response)=> response.json())
-        .then((data) => {
-            JSON.parse(JSON.stringify(data), (email: string, contribs: number) => {
-                if (email!=''){   
-                    this.realData.push({
-                        email: email,
-                        contribuciones: contribs
-                    })
-                }
-                
-            })
-            this.isLoading=false
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-    }
-    async getPieChartData(){
-        await fetch('https://www.gpi.valdomero.live/stats/extractors',{
-            headers: {
-                'Content-Type': 'application/json',
-                'X-API-KEY': 'rayaparalasuma'
-            }
-        })
-        .then(response => response.json())
-        .then((data) =>{
-            JSON.parse(JSON.stringify(data), (id: string, contribNumber: number) => {
-                if (id!='data' && id!=''){
-                    this.dataChart.labels.push(id)
-                    this.dataChart.datasets[0].data.push(contribNumber)
-                }
-            })
-            this.isLoadingChart = false
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-    }
-    mounted(){
-        void this.getContribTable()
-        void this.getPieChartData()
-    }
-}
-export namespace StatsPage{
-    export interface data{
-        email:string,
-        contribuciones: number
-    }
-    export interface Factors {
-		data: number[];
+	contributions: StatsPage.data[] = [];
+	data: number[] = [];
+	labels: string[] = [];
+	chartColors = Object.freeze(['#ff4500']);
+	@Inject() loader: MainLayout.Loader;
+	mounted() {
+		void this.init();
 	}
-	export interface DataChart {
-		labels: string[];
-		datasets: StatsPage.Factors[];
+	async init() {
+		this.loader.show = true;
+		try {
+			await Promise.all([
+				api.$stats.contributions().then(response => {
+					if (!response.ok || !response.data)
+						throw new CustomError(
+							response.type as ApiService.ErrorType,
+							response.message,
+						);
+					this.contributions = Object.entries(response.data).map(entry => ({
+						email: entry[0],
+						total: entry[1],
+					}));
+				}),
+				api.$stats.extractors().then(response => {
+					if (!response.ok || !response.data)
+						throw new CustomError(
+							response.type as ApiService.ErrorType,
+							response.message,
+						);
+					Object.entries(response.data).forEach(extractor => {
+						this.labels.push(extractor[0]);
+						this.data.push(extractor[1]);
+					});
+				}),
+			]);
+			const chart = this.$refs['pieChart'] as pieChart;
+			chart.init();
+		} catch (error) {
+			const { message, type } = CustomError.format(error);
+			console.error(type, message);
+			this.$q.notify({ type: 'negative', message });
+		}
+		this.loader.show = false;
+	}
+	get prettyList() {
+		return this.labels.map((label, i) => ({ name: label, total: this.data[i] }));
+	}
+}
+export namespace StatsPage {
+	export interface data {
+		email: string;
+		total: number;
 	}
 }

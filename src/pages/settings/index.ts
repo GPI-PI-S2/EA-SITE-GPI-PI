@@ -1,11 +1,8 @@
-import InputC from 'components/InputC';
-import SelectC from 'src/components/SelectC';
-import SendButton from 'src/components/SendButton';
 import { StateInterface } from 'src/store';
 import { Component, Vue, Watch } from 'vue-property-decorator';
 
 @Component({
-	components: { InputC, SelectC, SendButton },
+	components: {},
 })
 export default class SettingsPage extends Vue {
 	apiKeyYoutube = '';
