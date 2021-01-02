@@ -135,7 +135,7 @@
 										v-model="metakey"
 										:key="index"
 										:disable="loading"
-										@click="obtainExtractorData()"
+										@click="obtainTelegramData(chat)"
 									>
 										<q-item-section avatar>
 											<q-icon size="md" :name="chat.icon" />
