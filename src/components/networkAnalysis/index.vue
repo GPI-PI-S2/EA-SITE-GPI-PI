@@ -9,7 +9,7 @@
 				Detalles
 			</div>
 			<div class="row content-start col-xs-12 col-md-8">
-				<q-card flat bordered class="col-12 q-mt-sm q-mb-xs">
+				<q-card flat bordered class="col-12 q-mb-xs">
 					<div class="row justify-center content-center full-height">
 						<div class="text-center">
 							<div class="text-h5 ">{{ IE }}%</div>

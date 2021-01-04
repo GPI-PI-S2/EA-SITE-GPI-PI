@@ -45,10 +45,7 @@ export default class UnitAnalisis extends Vue {
 			if (!response.ok || !response.data)
 				throw new CustomError(response.type as ApiService.ErrorType, response.message);
 			this.version = response.data.modelVersion;
-			this.completionDate = date.formatDate(
-				response.data.completionDate,
-				'DD/MM/YYYY [a las] hh:mm:ss',
-			);
+			this.completionDate = date.formatDate(response.data.completionDate, 'DD/MM/YYYY');
 			const ordered = Object.entries(response.data)
 				.filter(
 					entry =>
@@ -99,7 +96,7 @@ export default class UnitAnalisis extends Vue {
 	}
 	get formattedDate() {
 		if (!this.model) return null;
-		return date.formatDate(this.model.created, 'DD/MM/YYYY [a las] hh:mm:ss');
+		return date.formatDate(this.model.created, 'DD/MM/YYYY');
 	}
 	get prettyExtractor() {
 		if (!this.model) return null;
