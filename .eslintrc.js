@@ -85,5 +85,11 @@ module.exports = {
 		'@typescript-eslint/no-namespace': 0,
 		'@typescript-eslint/no-empty-interface': 0,
 		'@typescript-eslint/no-explicit-any': 2,
+		'@typescript-eslint/no-misused-promises': [
+			'error',
+			{
+				checksVoidReturn: false,
+			},
+		],
 	},
 };

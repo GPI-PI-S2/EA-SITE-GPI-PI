@@ -23,7 +23,7 @@ export default route<Store<StateInterface>>(function({ Vue }) {
 		base: process.env.VUE_ROUTER_BASE,
 	});
 	Router.beforeEach((to, from, next) => {
-		if (to.path === '/') return next({ name: 'extractors' });
+		if (to.path === '/') return next({ name: 'results' });
 		else return next();
 	});
 	return Router;
