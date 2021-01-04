@@ -9,7 +9,7 @@ export default class MainLayout extends Vue {
 	items: Readonly<MainLayout.page[]> = Object.freeze([
 		{ name: 'Resultados', icon: 'mdi-contain', to: { name: 'results' } },
 		{ name: 'Explorar', icon: 'mdi-database-search', to: { name: 'database' } },
-		{ name: 'Extractores', icon: 'mdi-download-multiple', to: { name: 'extractors' } },
+		//{ name: 'Extractores', icon: 'mdi-download-multiple', to: { name: 'extractors' } },
 		{ name: 'Base de datos', icon: 'mdi-database-settings', to: { name: 'stats' } },
 		{ name: 'Ajustes', icon: 'mdi-cog', to: { name: 'settings' } },
 		{ name: 'Sobre la app', icon: 'mdi-information', to: { name: 'about' } },
