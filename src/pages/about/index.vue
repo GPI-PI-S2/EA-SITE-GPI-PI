@@ -70,12 +70,29 @@
 								Repositorios de la aplicación
 							</div>
 						</div>
-						<div class="row ">
-							<q-img class="col-12 col-md" :src="imgArquiTabla" alt="" />
+						<div class="row q-pt-md">
+							<q-markup-table
+								wrap-cells
+								bordered
+								flat
+								separator="cell"
+								class="col-12"
+							>
+								<tbody>
+									<tr v-for="(repo, index) in repos" :key="index">
+										<td class="text-center">{{ repo.repoName }}</td>
+										<td class="text-left">{{ repo.name }}</td>
+										<td class="text-left">
+											{{ repo.desc }}
+										</td>
+									</tr>
+								</tbody>
+							</q-markup-table>
+							<!-- <q-img class="col-12 col-md" :src="imgArquiTabla" alt="" /> -->
 						</div>
 						<div class="row">
-							<div class="col-12 col-md">
-								<div class="text-subtitle2 q-pt-lg q-pb-sm">
+							<div class="col-12">
+								<div class="text-subtitle2 q-py-lg q-pb-sm">
 									Links de repositorios
 								</div>
 							</div>

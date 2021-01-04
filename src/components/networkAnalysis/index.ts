@@ -1,15 +1,13 @@
 import barChart from 'components/charts/bar';
-import { date } from 'quasar';
 import { api } from 'src/boot/api';
 import { AnalSentiment } from 'src/controllers/AnalSentiment';
 import { ApiService } from 'src/controllers/api/ApiService';
 import { DB } from 'src/controllers/api/DB';
 import { CustomError } from 'src/controllers/CustomError';
-import { DatabasePage } from 'src/pages/database';
 import { Column } from 'src/types';
-import { Component, Model, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({ components: { barChart } })
-export default class UnitAnalisis extends Vue {
+export default class NetworkAnalisis extends Vue {
 	loading = true;
 	analysis: AnalSentiment.Analyzed[] = [];
 	version = '';
@@ -21,12 +19,7 @@ export default class UnitAnalisis extends Vue {
 	PEC = NaN;
 	SEC = NaN;
 	IE = NaN;
-	@Model('vchange')
-	change!: DatabasePage.Item;
-	@Watch('model', { deep: true, immediate: true })
-	onVChangeModel() {
-		void this.init();
-	}
+	totalDB = NaN;
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	columns: Readonly<Column<AnalSentiment.Analyzed>[]> = Object.freeze([
 		{ name: 'name', label: 'Factor', align: 'left', field: e => e.name as string },
@@ -38,18 +31,15 @@ export default class UnitAnalisis extends Vue {
 			sortable: true,
 		},
 	]);
+	@Prop({ type: String })
+	extractor!: string;
 	async init() {
 		this.loading = true;
 		try {
-			const response = await api.$db.analysisFetch(`${this.model._id}`);
+			const response = await api.$stats.calc({ extractor: this.extractor });
 			if (!response.ok || !response.data)
 				throw new CustomError(response.type as ApiService.ErrorType, response.message);
-			this.version = response.data.modelVersion;
-			this.completionDate = date.formatDate(
-				response.data.completionDate,
-				'DD/MM/YYYY [a las] hh:mm:ss',
-			);
-			const ordered = Object.entries(response.data)
+			const ordered = Object.entries(response.data.sentiments)
 				.filter(
 					entry =>
 						entry[0] != '_id' &&
@@ -61,9 +51,9 @@ export default class UnitAnalisis extends Vue {
 				)
 				.map(entry => ({
 					name: entry[0],
-					value: this.chanchuyo(entry[1] as number),
-				})) as UnitAnalisis.Analysis;
-			const analysis = new AnalSentiment(this.model.extractor, ordered);
+					value: entry[1],
+				})) as NetworkAnalisis.Analysis;
+			const analysis = new AnalSentiment(this.extractor, ordered);
 			this.analysis = analysis.scale;
 			this.CE = analysis.CE;
 			this.AE = analysis.AE;
@@ -72,6 +62,7 @@ export default class UnitAnalisis extends Vue {
 			this.PEC = analysis.PEC;
 			this.SEC = analysis.SEC;
 			this.IE = analysis.IE;
+			this.totalDB = response.data.total;
 			await this.$nextTick();
 			const chart = this.$refs['barChart'] as barChart;
 			chart.init();
@@ -81,29 +72,21 @@ export default class UnitAnalisis extends Vue {
 		}
 		this.loading = false;
 	}
-	chanchuyo(value: number) {
-		const length = this.model.comment.length;
-		if (length <= 1) return value;
-		else return value / this.logN(511, length);
-	}
-	logN(base: number, x: number) {
-		const a = Math.log(x);
-		const b = Math.log(base);
-		return a / b;
-	}
-	get model() {
-		return this.change;
-	}
-	set model(v) {
-		this.$emit('vchange', v);
-	}
-	get formattedDate() {
-		if (!this.model) return null;
-		return date.formatDate(this.model.created, 'DD/MM/YYYY [a las] hh:mm:ss');
+
+	get chartData() {
+		const data: number[] = [];
+		const labels: string[] = [];
+		this.analysis.forEach(factor => {
+			data.push(factor.value);
+			labels.push(factor.name);
+		});
+		return {
+			data,
+			labels,
+		};
 	}
 	get prettyExtractor() {
-		if (!this.model) return null;
-		switch (this.model.extractor) {
+		switch (this.extractor) {
 			case 'telegram-extractor': {
 				return {
 					icon: 'mdi-telegram',
@@ -141,21 +124,8 @@ export default class UnitAnalisis extends Vue {
 			}
 		}
 	}
-
-	get chartData() {
-		const data: number[] = [];
-		const labels: string[] = [];
-		this.analysis.forEach(factor => {
-			data.push(factor.value);
-			labels.push(factor.name);
-		});
-		return {
-			data,
-			labels,
-		};
-	}
 }
-export namespace UnitAnalisis {
+export namespace NetworkAnalisis {
 	export type Analysis = {
 		name: keyof Omit<
 			DB.DB.Analysis,

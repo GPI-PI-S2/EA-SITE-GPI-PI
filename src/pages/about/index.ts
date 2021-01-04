@@ -62,7 +62,7 @@ export default class AboutPage extends Vue {
 		`,
 		},
 	]);
-	IntegrantesList: Readonly<aboutPage.TeammInfo[]> = Object.freeze([
+	IntegrantesList: Readonly<AboutPage.TeammInfo[]> = Object.freeze([
 		{
 			name: 'Líderes de equipo',
 			integrantes: [
@@ -329,19 +329,56 @@ export default class AboutPage extends Vue {
 			],
 		},
 	]);
-	githubRoutes: Readonly<aboutPage.Groute[]> = Object.freeze([
+	githubRoutes: Readonly<AboutPage.Groute[]> = Object.freeze([
 		{ label: 'CORE-GPI-PI', href: 'https://github.com/GPI-PI-S2/EA-CORE-GPI-PI' },
 		{ label: 'SERVER-GPI-PI', href: 'https://github.com/GPI-PI-S2/EA-SERVER-GPI-PI' },
 		{ label: 'CLIENT-GPI-PI', href: 'https://github.com/GPI-PI-S2/EA-EXE-GPI-PI' },
 		{ label: 'COMMON-GPI-PI', href: 'https://github.com/GPI-PI-S2/EA-COMMON-GPI-PI' },
 		{ label: 'WEB-GPI-PI', href: 'https://github.com/GPI-PI-S2/EA-SITE-GPI-PI' },
 	]);
+	repos: Readonly<AboutPage.Repo[]> = Object.freeze([
+		{
+			repoName: 'EA-CORE-GPI-PI',
+			name: 'Node.Js - Librería',
+			desc:
+				'Contiene el extractor y analizador de contenido.\nSe compila como librería par ser ejecutado desde una fuente externa.',
+		},
+		{
+			repoName: 'EA-SERVER-GPI-PI',
+			name: 'Node.js - Express.js (TS)',
+			desc:
+				'Servidor encargado de enrutar el acceso a la B.B.D.D, sitio web y API  a EA-CORE-GPI-PI ',
+		},
+		{
+			repoName: 'EA-EXE-GPI-PI',
+			name: 'Node.js - Typescript (TS)',
+			desc:
+				'Ejecutable que permite realizar extracciones y guardarlas directamente en la B.B.D.D',
+		},
+		{
+			repoName: 'EA-COMMON-GPI-PI',
+			name: 'Script - Librería',
+			desc: 'Utilidades varias',
+		},
+		{
+			repoName: 'EA-SITE-GPI-PI',
+			name: 'Vue - Typescript (TS)',
+			desc:
+				'Sitio que provee una interfaz gráfica de uso para EA-CORE-GPI-PI mediante la api provista por EA-SERVER-GPI-PI ',
+		},
+		{
+			repoName: 'EA-IEOM2-GPI-PI',
+			name: 'Node.JS - Typescript (TS)',
+			desc:
+				'Repositorio donde se alojan los diccionarios para realizar el calculo de factores emocionales',
+		},
+	]);
 	onClickRepo(href: string) {
 		window.open(href, '_blank');
 	}
 	// emol y reddit lim comments
 }
-export namespace aboutPage {
+export namespace AboutPage {
 	export interface Groute {
 		label: string;
 		href: string;
@@ -356,5 +393,10 @@ export namespace aboutPage {
 	export interface TeammInfo {
 		name: string;
 		integrantes: Integrantes[];
+	}
+	export interface Repo {
+		repoName: string;
+		name: string;
+		desc: string;
 	}
 }
