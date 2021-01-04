@@ -1,14 +1,16 @@
+import logo from 'assets/logo.png';
 import { Component, Provide, Vue, Watch } from 'vue-property-decorator';
 import { RawLocation } from 'vue-router';
 @Component
 export default class MainLayout extends Vue {
 	leftDrawerOpen = false;
 	expanded = false;
+	utem = logo;
 	items: Readonly<MainLayout.page[]> = Object.freeze([
 		{ name: 'Resultados', icon: 'mdi-contain', to: { name: 'results' } },
-		{ name: 'Extractores', icon: 'mdi-home', to: { name: 'extractors' } },
-		{ name: 'Stats', icon: 'mdi-state-machine', to: { name: 'stats' } },
-		{ name: 'Database', icon: 'mdi-database-arrow-down-outline', to: { name: 'database' } },
+		{ name: 'Explorar', icon: 'mdi-database-search', to: { name: 'database' } },
+		{ name: 'Extractores', icon: 'mdi-download-multiple', to: { name: 'extractors' } },
+		{ name: 'Base de datos', icon: 'mdi-database-settings', to: { name: 'stats' } },
 		{ name: 'Ajustes', icon: 'mdi-cog', to: { name: 'settings' } },
 		{ name: 'Sobre la app', icon: 'mdi-information', to: { name: 'about' } },
 	]);

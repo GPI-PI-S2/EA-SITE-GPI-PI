@@ -190,7 +190,6 @@ export class AnalSentiment {
 		return AnalSentiment.round((this.CS + this.RS) / 2);
 	}
 	get IE() {
-		console.log(this.PEC, this.SEC);
 		return this.PEC + this.SEC;
 	}
 }

@@ -2,7 +2,7 @@
 	<div class="q-pa-lg row" :style="{ position: 'relative', minHeight: '600px' }">
 		<div class="col-12 q-pb-md">
 			<div class="text-h6">
-				Estadísticas
+				Base de Datos
 			</div>
 		</div>
 		<div class="col-12 q-pt-md q-pb-sm">
