@@ -28,24 +28,32 @@
 						:colors="chartColors"
 					/>
 				</q-card>
-				<q-markup-table
-					bordered
-					flat
-					:class="`col-xs-12 col-md-4 ${$q.screen.gt.sm ? 'q-ml-sm' : 'q-mt-sm'}`"
+				<div
+					:class="`column col-xs-12 col-md-4 ${$q.screen.gt.sm ? 'q-ml-sm' : 'q-mt-sm'}`"
 				>
-					<thead>
-						<tr>
-							<th class="text-left">Extractor</th>
-							<th class="text-right">Cantidad</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="extractor in prettyList" :key="extractor.name">
-							<td class="text-left">{{ extractor.name }}</td>
-							<td class="text-right">{{ extractor.total }}</td>
-						</tr>
-					</tbody>
-				</q-markup-table>
+					<q-markup-table bordered flat class="col-grow">
+						<thead>
+							<tr>
+								<th class="text-left">Extractor</th>
+								<th class="text-right">Cantidad</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="extractor in prettyList" :key="extractor.name">
+								<td class="text-left">{{ extractor.name }}</td>
+								<td class="text-right">{{ extractor.total }}</td>
+							</tr>
+						</tbody>
+					</q-markup-table>
+					<q-card
+						bordered
+						flat
+						class="q-mt-sm q-px-md q-py-sm col-shrink row content-center"
+					>
+						<div class="col-grow row content-center text-subtitle2">Total</div>
+						<div class="col-shrink text-subtitle1">{{ total }}</div>
+					</q-card>
+				</div>
 			</div>
 		</div>
 		<div class="col-12 q-pt-md q-pb-sm">

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { NetworkAnalisis } from 'src/components/networkAnalysis';
 import ChartC from 'src/components/old_chart';
 import InputC from 'src/components/old_InputC';
+import { AnalSentiment } from 'src/controllers/AnalSentiment';
 import { StateInterface } from 'src/store';
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { AnalSentiment } from 'src/controllers/AnalSentiment';
-import { NetworkAnalisis } from 'src/components/networkAnalysis';
 
 @Component({
 	components: { ChartC, InputC },
@@ -165,25 +167,25 @@ export default class ExtractorsPage extends Vue {
 
 				// ARREGLAR ESTO (tipear response)
 
-			.then((data) => {
-				const telegramResponse: ExtractorsPage.telegramRes = data.data;
-				if (telegramResponse.data.chats) {
-					telegramResponse.data.chats.map(chat => {
-						this.chats.push({
-							id: chat.id,
-							accessHash: chat.accessHash,
-							type: chat.type,
-							name: chat.name,
-							icon: 'mdi-telegram',
+				.then(data => {
+					const telegramResponse: ExtractorsPage.telegramRes = data.data;
+					if (telegramResponse.data.chats) {
+						telegramResponse.data.chats.map(chat => {
+							this.chats.push({
+								id: chat.id,
+								accessHash: chat.accessHash,
+								type: chat.type,
+								name: chat.name,
+								icon: 'mdi-telegram',
+							});
 						});
-					});
-				}
-				this.pending = false;
-				this.registered = true;
-			})
-			.catch((error: ExtractorsPage.ErrorType) => {
-				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-			});
+					}
+					this.pending = false;
+					this.registered = true;
+				})
+				.catch((error: ExtractorsPage.ErrorType) => {
+					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
+				});
 		} else {
 			this.actualId = id;
 			await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy', {
@@ -202,30 +204,37 @@ export default class ExtractorsPage extends Vue {
 					phone: this.actualId == 'telegram-extractor' ? this.phoneNumber : undefined,
 				},
 			})
-				.then((data: { data: { chats: { id: number, accessHash: string, type: string, name: string }, status: number } }) => {
-					console.log(data)
-					if (this.actualId == 'telegram-extractor') {
-						const telegramResponse: ExtractorsPage.telegramRes = data.data;
-						if (telegramResponse.status == 2) {
-							if (telegramResponse.data.codeHash) {
-								this.codeHash = telegramResponse.data.codeHash;
-							}
-						} else if (telegramResponse.status == 3) {
-							telegramResponse.data.chats.map(chat => {
-								this.chats.push({
-									id: chat.id,
-									accessHash: chat.accessHash,
-									type: chat.type,
-									name: chat.name,
-									icon: 'mdi-telegram',
+				.then(
+					(data: {
+						data: {
+							chats: { id: number; accessHash: string; type: string; name: string };
+							status: number;
+						};
+					}) => {
+						console.log(data);
+						if (this.actualId == 'telegram-extractor') {
+							const telegramResponse: ExtractorsPage.telegramRes = data.data as never;
+							if (telegramResponse.status == 2) {
+								if (telegramResponse.data.codeHash) {
+									this.codeHash = telegramResponse.data.codeHash;
+								}
+							} else if (telegramResponse.status == 3) {
+								telegramResponse.data.chats.map(chat => {
+									this.chats.push({
+										id: chat.id,
+										accessHash: chat.accessHash,
+										type: chat.type,
+										name: chat.name,
+										icon: 'mdi-telegram',
+									});
 								});
-							});
+							}
 						}
-					}
-					this.registered = true;
-					this.loading = false;
-					this.step = 1;
-				})
+						this.registered = true;
+						this.loading = false;
+						this.step = 1;
+					},
+				)
 				.catch((error: ExtractorsPage.ErrorType) => {
 					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
 				});
@@ -328,11 +337,10 @@ export default class ExtractorsPage extends Vue {
 						return factor / result.length;
 					},
 				);
-				const ordered = Object.entries(localAverage.sentiments)
-					.map(entry => ({
-						name: entry[0],
-						value: entry[1] / result.length,
-					})) as NetworkAnalisis.Analysis;
+				const ordered = Object.entries(localAverage.sentiments).map(entry => ({
+					name: entry[0],
+					value: entry[1] / result.length,
+				})) as NetworkAnalisis.Analysis;
 				const analysis = new AnalSentiment(this.actualId, ordered);
 				this.analysis = analysis.scale;
 				this.CE = analysis.CE;
@@ -347,11 +355,11 @@ export default class ExtractorsPage extends Vue {
 			})
 			.catch((error: ExtractorsPage.ErrorType) => {
 				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-			})
+			});
 	}
 	async obtainTelegramData(chat: ExtractorsPage.chatsTelegram) {
-		this.loading = true
-		console.log(chat)
+		this.loading = true;
+		console.log(chat);
 		const body: ExtractorsPage.ExtractorData = {
 			id: this.actualId,
 			options: {
@@ -359,81 +367,98 @@ export default class ExtractorsPage extends Vue {
 				metaKey: chat.id.toString(),
 				limit: this.limitComments,
 				accessHash: chat.accessHash,
-				type: chat.type
-			}
-		}
-		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain', body).then((data) => {
-			const result: ExtractorsPage.ResultsObtain[] = data.data.data.result
-			const localAverage: ExtractorsPage.ResultsObtain = {
-				input: {
-					content: 'Analisis'
-				},
-				sentiments: {
-					'asertividad': 0,
-					'autoconciencia emocional': 0,
-					'autocontrol emocional': 0,
-					'autoestima': 0,
-					'colaboración y cooperación': 0,
-					'comprensión organizativa': 0,
-					'conciencia crítica': 0,
-					'comunicacion asertiva': 0,
-					'desarrollo de las relaciones': 0,
-					'desarrollar y estimular a los demás': 0,
-					'empatía': 0,
-					'influencia': 0,
-					'liderazgo': 0,
-					'manejo de conflictos': 0,
-					'motivación de logro': 0,
-					'optimismo': 0,
-					'percepción y comprensión emocional': 0,
-					'relación social': 0,
-					'tolerancia a la frustración': 0,
-					'violencia': 0
-				}
-			}
-			result.map((comment) => {
-				localAverage.sentiments.asertividad += comment.sentiments.asertividad
-				localAverage.sentiments['autoconciencia emocional'] += comment.sentiments['autoconciencia emocional']
-				localAverage.sentiments['autocontrol emocional'] += comment.sentiments['autocontrol emocional']
-				localAverage.sentiments['autoestima'] += comment.sentiments['autoestima']
-				localAverage.sentiments['colaboración y cooperación'] += comment.sentiments['colaboración y cooperación']
-				localAverage.sentiments['comprensión organizativa'] += comment.sentiments['comprensión organizativa']
-				localAverage.sentiments['conciencia crítica'] += comment.sentiments['conciencia crítica']
-				localAverage.sentiments['comunicacion asertiva'] += comment.sentiments['comunicacion asertiva']
-				localAverage.sentiments['desarrollo de las relaciones'] += comment.sentiments['desarrollo de las relaciones']
-				localAverage.sentiments['desarrollar y estimular a los demás'] += comment.sentiments['desarrollar y estimular a los demás']
-				localAverage.sentiments.empatía += comment.sentiments.empatía
-				localAverage.sentiments.influencia += comment.sentiments.influencia
-				localAverage.sentiments.liderazgo += comment.sentiments.liderazgo
-				localAverage.sentiments['manejo de conflictos'] += comment.sentiments['manejo de conflictos']
-				localAverage.sentiments['motivación de logro'] += comment.sentiments['motivación de logro']
-				localAverage.sentiments.optimismo += comment.sentiments.optimismo
-				localAverage.sentiments['percepción y comprensión emocional'] += comment.sentiments['percepción y comprensión emocional']
-				localAverage.sentiments['relación social'] += comment.sentiments['relación social']
-				localAverage.sentiments['tolerancia a la frustración'] += comment.sentiments['tolerancia a la frustración']
-				localAverage.sentiments.violencia += comment.sentiments.violencia
-			})
-			this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map((factor) => { return (factor / result.length) })
-			const ordered = Object.entries(localAverage.sentiments)
-				.map(entry => ({
+				type: chat.type,
+			},
+		};
+		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain', body)
+			.then(data => {
+				const result: ExtractorsPage.ResultsObtain[] = data.data.data.result;
+				const localAverage: ExtractorsPage.ResultsObtain = {
+					input: {
+						content: 'Analisis',
+					},
+					sentiments: {
+						asertividad: 0,
+						'autoconciencia emocional': 0,
+						'autocontrol emocional': 0,
+						autoestima: 0,
+						'colaboración y cooperación': 0,
+						'comprensión organizativa': 0,
+						'conciencia crítica': 0,
+						'comunicacion asertiva': 0,
+						'desarrollo de las relaciones': 0,
+						'desarrollar y estimular a los demás': 0,
+						empatía: 0,
+						influencia: 0,
+						liderazgo: 0,
+						'manejo de conflictos': 0,
+						'motivación de logro': 0,
+						optimismo: 0,
+						'percepción y comprensión emocional': 0,
+						'relación social': 0,
+						'tolerancia a la frustración': 0,
+						violencia: 0,
+					},
+				};
+				result.map(comment => {
+					localAverage.sentiments.asertividad += comment.sentiments.asertividad;
+					localAverage.sentiments['autoconciencia emocional'] +=
+						comment.sentiments['autoconciencia emocional'];
+					localAverage.sentiments['autocontrol emocional'] +=
+						comment.sentiments['autocontrol emocional'];
+					localAverage.sentiments['autoestima'] += comment.sentiments['autoestima'];
+					localAverage.sentiments['colaboración y cooperación'] +=
+						comment.sentiments['colaboración y cooperación'];
+					localAverage.sentiments['comprensión organizativa'] +=
+						comment.sentiments['comprensión organizativa'];
+					localAverage.sentiments['conciencia crítica'] +=
+						comment.sentiments['conciencia crítica'];
+					localAverage.sentiments['comunicacion asertiva'] +=
+						comment.sentiments['comunicacion asertiva'];
+					localAverage.sentiments['desarrollo de las relaciones'] +=
+						comment.sentiments['desarrollo de las relaciones'];
+					localAverage.sentiments['desarrollar y estimular a los demás'] +=
+						comment.sentiments['desarrollar y estimular a los demás'];
+					localAverage.sentiments.empatía += comment.sentiments.empatía;
+					localAverage.sentiments.influencia += comment.sentiments.influencia;
+					localAverage.sentiments.liderazgo += comment.sentiments.liderazgo;
+					localAverage.sentiments['manejo de conflictos'] +=
+						comment.sentiments['manejo de conflictos'];
+					localAverage.sentiments['motivación de logro'] +=
+						comment.sentiments['motivación de logro'];
+					localAverage.sentiments.optimismo += comment.sentiments.optimismo;
+					localAverage.sentiments['percepción y comprensión emocional'] +=
+						comment.sentiments['percepción y comprensión emocional'];
+					localAverage.sentiments['relación social'] +=
+						comment.sentiments['relación social'];
+					localAverage.sentiments['tolerancia a la frustración'] +=
+						comment.sentiments['tolerancia a la frustración'];
+					localAverage.sentiments.violencia += comment.sentiments.violencia;
+				});
+				this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map(
+					factor => {
+						return factor / result.length;
+					},
+				);
+				const ordered = Object.entries(localAverage.sentiments).map(entry => ({
 					name: entry[0],
 					value: entry[1] / result.length,
 				})) as NetworkAnalisis.Analysis;
-			const analysis = new AnalSentiment(this.actualId, ordered);
-			this.analysis = analysis.scale;
-			this.CE = analysis.CE;
-			this.AE = analysis.AE;
-			this.CS = analysis.CS;
-			this.RS = analysis.RS;
-			this.PEC = analysis.PEC;
-			this.SEC = analysis.SEC;
-			this.IE = analysis.IE;
-			this.loading = false
-			this.step = 2
-		})
+				const analysis = new AnalSentiment(this.actualId, ordered);
+				this.analysis = analysis.scale;
+				this.CE = analysis.CE;
+				this.AE = analysis.AE;
+				this.CS = analysis.CS;
+				this.RS = analysis.RS;
+				this.PEC = analysis.PEC;
+				this.SEC = analysis.SEC;
+				this.IE = analysis.IE;
+				this.loading = false;
+				this.step = 2;
+			})
 			.catch((error: ExtractorsPage.ErrorType) => {
 				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-			})
+			});
 	}
 	@Watch('codeConfirmation')
 	onChangeCodeConfirmation(c: string) {

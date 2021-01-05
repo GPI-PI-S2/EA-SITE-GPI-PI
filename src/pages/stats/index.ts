@@ -13,7 +13,7 @@ export default class statsPage extends Vue {
 	contributions: StatsPage.data[] = [];
 	data: number[] = [];
 	labels: string[] = [];
-	chartColors = Object.freeze(['#ff4500']);
+	chartColors = Object.freeze(['#9e9e9e', '#ff9800', '#4fc3f7', '#2196f3', '#f44336']);
 	@Inject() loader: MainLayout.Loader;
 	mounted() {
 		void this.init();
@@ -56,6 +56,9 @@ export default class statsPage extends Vue {
 	}
 	get prettyList() {
 		return this.labels.map((label, i) => ({ name: label, total: this.data[i] }));
+	}
+	get total() {
+		return this.data.reduce((p, c) => p + c);
 	}
 }
 export namespace StatsPage {
