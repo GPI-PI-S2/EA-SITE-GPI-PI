@@ -16,7 +16,7 @@ export default class MainLayout extends Vue {
 	]);
 	@Provide() loader: MainLayout.Loader = { message: 'Cargando', show: false };
 	@Watch('$route.name')
-	onChangeRoute(c: string) {
+	onChangeRoute() {
 		this.loader.message = 'Cargando';
 		this.loader.show = false;
 	}

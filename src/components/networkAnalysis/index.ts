@@ -53,7 +53,9 @@ export default class NetworkAnalisis extends Vue {
 					name: entry[0],
 					value: entry[1],
 				})) as NetworkAnalisis.Analysis;
+			console.log(ordered)
 			const analysis = new AnalSentiment(this.extractor, ordered);
+			console.log(analysis)
 			this.analysis = analysis.scale;
 			this.CE = analysis.CE;
 			this.AE = analysis.AE;

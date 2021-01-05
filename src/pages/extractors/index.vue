@@ -245,6 +245,123 @@
 						</div>
 					</q-step>
 					<q-step :name="2" title="Resultados" icon="assignment" :done="step > 2">
+						<div class="row q-pa-md q-col-gutter-sm">
+							<div class="row col-xs-12 col-md-12">
+								<q-card flat bordered class="col-12 q-mt-sm q-mb-xs">
+									<div class="row justify-center content-center full-height">
+										<div class="text-center">
+											<div class="text-h5 ">{{IE}}%</div>
+											<div
+												class="text-caption
+					"
+											>
+												Inteligencia Emocional
+											</div>
+										</div>
+									</div>
+								</q-card>
+								<div class="col-6 q-my-xs q-pr-xs">
+									<q-card flat bordered>
+										<div class="row justify-center content-center full-height">
+											<div class="text-center">
+												<div
+													class="text-h6 text-weight-regular
+					"
+												>
+													{{PEC}}%
+												</div>
+												<div
+													class="text-caption
+					"
+												>
+													Capital Emocional
+												</div>
+											</div>
+										</div>
+									</q-card>
+								</div>
+								<div class="col-6 q-my-xs q-pl-xs">
+									<q-card flat bordered>
+										<div class="row justify-center content-center full-height">
+											<div class="text-center">
+												<div
+													class="text-h6 text-weight-regular
+					"
+												>
+													{{SEC}}%
+												</div>
+												<div
+													class="text-caption
+					"
+												>
+													Capital Relacional
+												</div>
+											</div>
+										</div>
+									</q-card>
+								</div>
+								<div class="col-3 q-my-xs q-pr-xs">
+									<q-card flat bordered>
+										<div class="row justify-center content-center full-height">
+											<div class="text-center">
+												<div class="text-subtitle1">{{CE}}%</div>
+												<div
+													class="text-caption
+					"
+												>
+													Autoconciencia Emocional
+												</div>
+											</div>
+										</div>
+									</q-card>
+								</div>
+								<div class="col-3 q-my-xs q-px-xs">
+									<q-card flat bordered>
+										<div class="row justify-center content-center full-height">
+											<div class="text-center">
+												<div class="text-subtitle1">{{AE}}%</div>
+												<div
+													class="text-caption
+					"
+												>
+													Autorregulación Emocional
+												</div>
+											</div>
+										</div>
+									</q-card>
+								</div>
+								<div class="col-3 q-my-xs q-px-xs">
+									<q-card flat bordered>
+										<div class="row justify-center content-center full-height">
+											<div class="text-center">
+												<div class="text-subtitle1">{{CS}}%</div>
+												<div
+													class="text-caption
+					"
+												>
+													Conciencia Emocional Social
+												</div>
+											</div>
+										</div>
+									</q-card>
+								</div>
+								<div class="col-3 q-my-xs q-pl-xs">
+									<q-card flat bordered>
+										<div class="row justify-center content-center full-height">
+											<div class="text-center">
+												<div class="text-subtitle1">{{ RS }}%</div>
+												<div
+													class="text-caption
+					"
+												>
+													Regulación Emocional Social
+												</div>
+											</div>
+										</div>
+									</q-card>
+								</div>
+							</div>
+						</div>
 						<div class="chart-container">
 							<chart-c
 								class=""
@@ -253,32 +370,6 @@
 								:data="dataChart.datasets[0].data"
 								:labels="dataChart.labels"
 							/>
-						</div>
-
-						<div class="row">
-							<div
-								class="flex flex-center col-12 col-md"
-								v-for="(indicator, index) in PromedioFactor"
-								:key="index"
-							>
-								<q-card class="my-card card" flat bordered>
-									<q-card-section horizontal>
-										<div class="row col-grow">
-											<q-card-section class="col-6 q-pt-xs">
-												<div class="text-h5 q-mt-sm q-mb-xs">
-													{{ indicator.title }}
-												</div>
-												<div class="text-caption text-grey">
-													{{ indicator.subtitle }}
-												</div>
-											</q-card-section>
-											<q-card-section class="col-6 q-pt-xs">
-												<h5>{{ indicator.value }}</h5>
-											</q-card-section>
-										</div>
-									</q-card-section>
-								</q-card>
-							</div>
 						</div>
 					</q-step>
 					<template v-slot:navigation>
