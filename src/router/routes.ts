@@ -14,7 +14,7 @@ const routes: RouteConfig[] = [
 			{ path: 'about', name: 'about', component: () => import('pages/about') },
 			{ path: 'stats', name: 'stats', component: () => import('pages/stats') },
 			{ path: 'database', name: 'database', component: () => import('pages/database') },
-			{ path: 'results', name:'results', component: () => import ('pages/results')}
+			{ path: 'results', name: 'results', component: () => import('pages/results') },
 		],
 	},
 	// Always leave this as last one,
