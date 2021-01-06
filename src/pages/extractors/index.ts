@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import barChart from 'src/components/charts/bar';
 import { NetworkAnalisis } from 'src/components/networkAnalysis';
-import ChartC from 'src/components/old_chart';
-import InputC from 'src/components/old_InputC';
+import { api } from 'src/boot/api';
+import { ApiService } from 'src/controllers/api/ApiService';
+import { CustomError } from 'src/controllers/CustomError';
 import { AnalSentiment } from 'src/controllers/AnalSentiment';
 import { StateInterface } from 'src/store';
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Inject, Vue, Watch } from 'vue-property-decorator';
+import { Api } from 'src/controllers/api';
+import { Extractors } from 'src/controllers/api/Extractors';
+import { MainLayout } from 'src/layouts/main';
 
 @Component({
-	components: { ChartC, InputC },
+	components: { barChart },
 })
 export default class ExtractorsPage extends Vue {
 	apiKeyYoutube = '';
@@ -34,85 +39,175 @@ export default class ExtractorsPage extends Vue {
 	PEC = NaN;
 	SEC = NaN;
 	IE = NaN;
+	data: number[] = [];
+	labels: string[] = [];
+	@Inject() loader: MainLayout.Loader;
+	extractors = [];
 	average!: ExtractorsPage.ResultsObtain;
-	dataChart: ExtractorsPage.DataChart = {
-		labels: [
-			'Asertividad',
-			'Autoconsciencia emocional',
-			'Autocontrol emocional',
-			'Autoestima',
-			'Colaboración y cooperación',
-			'Comprensión organizativa',
-			'Consciencia crítica',
-			'Comunicacion asertiva',
-			'Desarrollo de las relaciones',
-			'Desarrollar y estimular a los demás',
-			'Empatía',
-			'Influencia',
-			'Liderazgo',
-			'Manejo de conflictos',
-			'Motivación de logro',
-			'Optimismo',
-			'Percepción y comprensión Emocional',
-			'Relación social',
-			'Tolerancia a la frustración',
-			'Violencia',
-		],
-		datasets: [
-			{
-				label: 'Factores emocionales',
-				data: [],
+	fillChatsTelegram(chats: {id: number,accessHash: string,type: 'user' | 'group' | 'channel', name: string}[]){
+		chats.map(chat => {
+			this.chats.push({
+				id: chat.id,
+				accessHash: chat.accessHash,
+				type: chat.type,
+				name: chat.name,
+				icon: 'mdi-telegram',
+			});
+		})
+	}
+	async validateTelegram(id: Extractors.extractor){
+		let requestC: Extractors.Deploy.RequestC<Extractors.extractor>
+		(requestC as Extractors.Deploy.RequestC<'telegram-extractor'>) = {
+			config: {
+				apiId: 1862196,
+				apiHash: 'ecf4f984d701a3ee7a909d0c505d2df5'
 			},
-		],
-	};
-	chats: ExtractorsPage.chatsTelegram[] = [
-		// icon: 'mdi-telegram',
-	];
-	extractors: ExtractorsPage.Extractor[] = [
-		{
-			icon: 'mdi-telegram',
-			id: 'telegram-extractor',
-			name: 'Telegram Extractor',
-			version: '0.0.0',
-			color: 'light-blue-4',
-		},
-		{
-			icon: 'mdi-youtube',
-			id: 'youtube-extractor',
-			name: 'Youtube Extractor',
-			version: '0.0.0',
-			color: 'red',
-		},
-		{
-			icon: 'mdi-reddit',
-			id: 'reddit-extractor',
-			name: 'Reddit Extractor',
-			version: '0.0.0',
-			color: 'orange',
-		},
-		{
-			icon: 'mdi-twitter',
-			id: 'twitter-extractor',
-			name: 'Twitter Extractor',
-			version: '0.0.0',
-			color: 'blue',
-		},
-		{
-			icon: 'mdi-newspaper',
-			id: 'emol-extractor',
-			name: 'EMOL Extractor',
-			version: '0.0.0',
-			color: 'grey',
-		},
-	];
+			options: {
+				phone: this.phoneNumber,
+				code: parseInt(this.codeConfirmation,10),
+				codeHash: this.codeHash
+			}
+		}
+		await api.$extractors.deploy(id,requestC).then((response2) =>{
+			if (!response2.ok || !response2.data){
+				this.pending=true
+				this.registered=false
+				throw new CustomError(
+					response2.type as ApiService.ErrorType,
+					response2.message,
+				)
+			}
+			this.pending = false
+			this.registered = true
+			this.fillChatsTelegram(response2.data.data.chats)
+		})
+	}
+	chats: ExtractorsPage.chatsTelegram[] = [];
+	async onClickExtractor(id: Extractors.extractor){
+		this.loader.show = true;
+		this.loading = true
+		this.actualId = id
+		let requestC: Extractors.Deploy.RequestC<Extractors.extractor>
+		switch (id) {
+			case 'telegram-extractor': {
+				(requestC as Extractors.Deploy.RequestC<'telegram-extractor'>) = {
+					config: {
+						apiId: 1862196,
+						apiHash: 'ecf4f984d701a3ee7a909d0c505d2df5'
+					},
+					options: {
+						phone: this.phoneNumber,
+					} 
+				}
+				break;
+			}
+			case 'youtube-extractor': {
+				(requestC as Extractors.Deploy.RequestC<'youtube-extractor'>) = {
+					config: {apiKey: this.apiKeyYoutube}
+				}
+				break;
+			}
+			case 'reddit-extractor': {
+				(requestC as Extractors.Deploy.RequestC<'reddit-extractor'>) = {
+					config: {}
+				}
+				break;
+			}
+			case 'twitter-extractor': {
+				(requestC as Extractors.Deploy.RequestC<'twitter-extractor'>) = {
+					config: {bearerToken: this.apiKeyTwitter}
+				}
+				break;
+			}
+			case 'emol-extractor':{
+				(requestC as Extractors.Deploy.RequestC<'emol-extractor'>) = {
+					config: {}
+				}
+				break;
+			}
+		}
+		await api.$extractors.deploy(id,requestC).then(response =>{
+			const verification = true
+			if (!response.ok || !response.data){
+				throw new CustomError(
+					response.type as ApiService.ErrorType,
+					response.message,
+				)	
+			}
+			if (id == 'telegram-extractor'){
+				const verification = false
+				if (response.data.status==2){
+					this.pending = true
+					this.codeHash = response.data.data.codeHash
+				}
+				if (response.data.status==3 || verification){
+					this.registered= true
+					this.fillChatsTelegram(response.data.data.chats)
+				}
+			}
+			this.loading = false
+			this.loader.show = false
+			verification ? this.step = 1 : this.step
+		})
+	}
+	chartData() {
+		this.analysis.forEach(factor => {
+			this.data.push(factor.value);
+			this.labels.push(factor.name);
+		});
+	}
+	get extractorsData(){
+		const extractorsLocal = []
+		api.$extractors.list().then((response) => {
+			if (!response.ok || !response.data){
+				throw new CustomError(
+					response.type as ApiService.ErrorType,
+					response.message,
+				)
+			}
+			response.data.map((extractor,index) => {
+				extractorsLocal.push(extractor)
+				switch(extractor.id){
+					case 'telegram-extractor': {
+						extractorsLocal[index].icon = 'mdi-telegram'
+						extractorsLocal[index].color = 'light-blue-4'
+						break;
+					}
+					case 'youtube-extractor': {
+						extractorsLocal[index].icon = 'mdi-youtube'
+						extractorsLocal[index].color = 'red'
+						break;
+					}
+					case 'twitter-extractor': {
+						extractorsLocal[index].icon = 'mdi-twitter'
+						extractorsLocal[index].color = 'blue'
+						break;
+					}
+					case 'reddit-extractor': {
+						extractorsLocal[index].icon = 'mdi-reddit'
+						extractorsLocal[index].color = 'orange'
+						break;
+					}
+					case 'emol-extractor': {
+						extractorsLocal[index].icon = 'mdi-newspaper'
+						extractorsLocal[index].color = 'grey'
+						break;
+					}
+				}
+			})
+		}).catch((error) => {
+			this.$q.notify({ type: 'negative', message: error.message });
+		})
+		return extractorsLocal;
+	}
 	mounted() {
+		this.extractors = this.extractorsData
 		const state = this.$store.state as StateInterface;
 		this.apiKeyYoutube = state.app.apiKeyYoutube;
 		this.apiKeyTwitter = state.app.apiKeyTwitter;
 		this.phoneNumber = state.app.phoneNumber;
 		this.limitComments = state.app.limit;
 	}
-
 	selectExtractId(id: string) {
 		this.extractors.find(extract => {
 			extract.id == id;
@@ -130,335 +225,159 @@ export default class ExtractorsPage extends Vue {
 				return true;
 		}
 	}
-	async fetchExtractor(url: string, bodyToSend: ExtractorsPage.ExtractorData) {
-		return fetch(url, {
-			method: 'POST',
-			credentials: 'include',
-			headers: {
-				'Content-type': 'application/json',
-				'X-API-KEY': 'rayaparalasuma',
-			},
-			body: JSON.stringify(bodyToSend),
-		}).then(response => {
-			const res = response.json();
-			if (response.status == 200) {
-				return res;
-			} else {
-				return res.then(Promise.reject.bind(Promise));
-			}
+	getSentimentsMetaKey(results: {input:{content: string},sentiments:Record<Api.sentiment, number>}[]){
+		const localAverage = {
+				asertividad: 0,
+				'autoconciencia emocional': 0,
+				'autocontrol emocional': 0,
+				autoestima: 0,
+				'colaboración y cooperación': 0,
+				'comprensión organizativa': 0,
+				'conciencia crítica': 0,
+				'comunicacion asertiva': 0,
+				'desarrollo de las relaciones': 0,
+				'desarrollar y estimular a los demás': 0,
+				empatía: 0,
+				influencia: 0,
+				liderazgo: 0,
+				'manejo de conflictos': 0,
+				'motivación de logro': 0,
+				optimismo: 0,
+				'percepción y comprensión emocional': 0,
+				'relación social': 0,
+				'tolerancia a la frustración': 0,
+				violencia: 0,
+		};
+		results.map(comment => {
+			localAverage.asertividad += comment.sentiments.asertividad;
+			localAverage['autoconciencia emocional'] +=
+				comment.sentiments['autoconciencia emocional'];
+			localAverage['autocontrol emocional'] +=
+				comment.sentiments['autocontrol emocional'];
+			localAverage['autoestima'] += comment.sentiments['autoestima'];
+			localAverage['colaboración y cooperación'] +=
+				comment.sentiments['colaboración y cooperación'];
+			localAverage['comprensión organizativa'] +=
+				comment.sentiments['comprensión organizativa'];
+			localAverage['conciencia crítica'] +=
+				comment.sentiments['conciencia crítica'];
+			localAverage['comunicacion asertiva'] +=
+				comment.sentiments['comunicacion asertiva'];
+			localAverage['desarrollo de las relaciones'] +=
+				comment.sentiments['desarrollo de las relaciones'];
+			localAverage['desarrollar y estimular a los demás'] +=
+				comment.sentiments['desarrollar y estimular a los demás'];
+			localAverage.empatía += comment.sentiments.empatía;
+			localAverage.influencia += comment.sentiments.influencia;
+			localAverage.liderazgo += comment.sentiments.liderazgo;
+			localAverage['manejo de conflictos'] +=
+				comment.sentiments['manejo de conflictos'];
+			localAverage['motivación de logro'] +=
+				comment.sentiments['motivación de logro'];
+			localAverage.optimismo += comment.sentiments.optimismo;
+			localAverage['percepción y comprensión emocional'] +=
+				comment.sentiments['percepción y comprensión emocional'];
+			localAverage['relación social'] +=
+				comment.sentiments['relación social'];
+			localAverage['tolerancia a la frustración'] +=
+				comment.sentiments['tolerancia a la frustración'];
+			localAverage.violencia += comment.sentiments.violencia;
 		});
+		return localAverage;
 	}
-	async onClickExtractor(id: string) {
-		this.loading = true;
-		if (this.actualId == 'telegram-extractor' && this.pending == true) {
-			this.actualId = id;
-			await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy', {
-				id: this.actualId,
-				config: {
-					apiId: 1862196,
-					apiHash: 'ecf4f984d701a3ee7a909d0c505d2df5',
-				},
-				options: {
-					phone: this.phoneNumber,
-					code: this.codeConfirmation,
-					codeHash: this.codeHash,
-				},
-			})
-
-				// ARREGLAR ESTO (tipear response)
-
-				.then(data => {
-					const telegramResponse: ExtractorsPage.telegramRes = data.data;
-					if (telegramResponse.data.chats) {
-						telegramResponse.data.chats.map(chat => {
-							this.chats.push({
-								id: chat.id,
-								accessHash: chat.accessHash,
-								type: chat.type,
-								name: chat.name,
-								icon: 'mdi-telegram',
-							});
-						});
+	async obtainExtractorData(id: Extractors.extractor, chat: ExtractorsPage.chatsTelegram = undefined){
+		this.loader.show = true;
+		this.loading = true
+		this.actualId = id
+		let requestC: Extractors.Obtain.requestC<Extractors.extractor>
+		switch (id) {
+			case 'telegram-extractor': {
+				(requestC as Extractors.Obtain.requestC<'telegram-extractor'>) = {
+					options: {
+						limit: this.limitComments,
+						metaKey: 'undef',
+						chatId: chat.id,
+						accessHash: chat.accessHash,
+						type: chat.type
 					}
-					this.pending = false;
-					this.registered = true;
-				})
-				.catch((error: ExtractorsPage.ErrorType) => {
-					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-				});
-		} else {
-			this.actualId = id;
-			await this.fetchExtractor('http://localhost:8000/api/v1/extractors/deploy', {
-				id: this.actualId,
-				config: {
-					bearerToken:
-						this.actualId == 'twitter-extractor' ? this.apiKeyTwitter : undefined,
-					apiId: this.actualId == 'telegram-extractor' ? 1862196 : undefined,
-					apiHash:
-						this.actualId == 'telegram-extractor'
-							? 'ecf4f984d701a3ee7a909d0c505d2df5'
-							: undefined,
-					apiKey: this.actualId == 'youtube-extractor' ? this.apiKeyYoutube : undefined,
-				},
-				options: {
-					phone: this.actualId == 'telegram-extractor' ? this.phoneNumber : undefined,
-				},
-			})
-				.then(
-					(data: {
-						data: {
-							chats: { id: number; accessHash: string; type: string; name: string };
-							status: number;
-						};
-					}) => {
-						console.log(data);
-						if (this.actualId == 'telegram-extractor') {
-							const telegramResponse: ExtractorsPage.telegramRes = data.data as never;
-							if (telegramResponse.status == 2) {
-								if (telegramResponse.data.codeHash) {
-									this.codeHash = telegramResponse.data.codeHash;
-								}
-							} else if (telegramResponse.status == 3) {
-								telegramResponse.data.chats.map(chat => {
-									this.chats.push({
-										id: chat.id,
-										accessHash: chat.accessHash,
-										type: chat.type,
-										name: chat.name,
-										icon: 'mdi-telegram',
-									});
-								});
-							}
-						}
-						this.registered = true;
-						this.loading = false;
-						this.step = 1;
-					},
-				)
-				.catch((error: ExtractorsPage.ErrorType) => {
-					this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-				});
-		}
-		this.loading = false;
-	}
-	async obtainExtractorData() {
-		this.loading = true;
-		const body: ExtractorsPage.ExtractorData = {
-			id: this.actualId,
-			options: {
-				limit: this.limitComments,
-				minSentenceSize: 3,
-			},
-		};
-		if (this.actualId == 'reddit-extractor') {
-			const cURL = new URL(this.metakey);
-			const paths = cURL.pathname.split('/');
-			if (paths.length != 7) throw new Error('URL inválido');
-			const subRedditlocal = paths[2];
-			const postIdlocal = paths[4];
-			if (!subRedditlocal || !postIdlocal) throw new Error('Subreddit o PostId Inválido');
-			else {
-				(body.options.metaKey = `{${subRedditlocal},${postIdlocal}}`),
-					(body.options.postId = postIdlocal);
-				body.options.subReddit = subRedditlocal;
+				}
+				break;
 			}
-		} else if (this.actualId == 'youtube-extractor') {
-			body.options.metaKey = this.urlYoutube.split('v=')[1].substring(0, 11);
-		} else {
-			body.options.metaKey = this.metakey;
+			case 'youtube-extractor': {
+				(requestC as Extractors.Obtain.requestC<'youtube-extractor'>) = {
+					options:{
+						limit: this.limitComments,
+						metaKey: this.urlYoutube.split('v=')[1].substring(0, 11)
+					}
+				}
+				break;
+			}
+			case 'reddit-extractor': {
+				const cURL = new URL(this.metakey);
+				const paths = cURL.pathname.split('/');
+				if (paths.length != 7) throw new Error('URL inválido');
+				const subRedditlocal = paths[2];
+				const postIdlocal = paths[4];
+				(requestC as Extractors.Obtain.requestC<'reddit-extractor'>) = {
+					options: {
+						limit: this.limitComments,
+						metaKey: `{${subRedditlocal},${postIdlocal}}`,
+						subReddit: subRedditlocal,
+						postId: postIdlocal
+					}
+				}
+				break;
+			}
+			case 'twitter-extractor': {
+				(requestC as Extractors.Obtain.requestC<'twitter-extractor'>) = {
+					options: {
+						limit: this.limitComments,
+						metaKey: this.metakey
+					}
+				}
+				break;
+			}
+			case 'emol-extractor':{
+				(requestC as Extractors.Obtain.requestC<'emol-extractor'>) = {
+					options: {
+						limit: this.limitComments,
+						metaKey: this.metakey
+					}
+				}
+				break;
+			}
 		}
-		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain', body)
-			.then(data => {
-				const result: ExtractorsPage.ResultsObtain[] = data.data.data.result;
-				const localAverage: ExtractorsPage.ResultsObtain = {
-					input: {
-						content: 'Analisis',
-					},
-					sentiments: {
-						asertividad: 0,
-						'autoconciencia emocional': 0,
-						'autocontrol emocional': 0,
-						autoestima: 0,
-						'colaboración y cooperación': 0,
-						'comprensión organizativa': 0,
-						'conciencia crítica': 0,
-						'comunicacion asertiva': 0,
-						'desarrollo de las relaciones': 0,
-						'desarrollar y estimular a los demás': 0,
-						empatía: 0,
-						influencia: 0,
-						liderazgo: 0,
-						'manejo de conflictos': 0,
-						'motivación de logro': 0,
-						optimismo: 0,
-						'percepción y comprensión emocional': 0,
-						'relación social': 0,
-						'tolerancia a la frustración': 0,
-						violencia: 0,
-					},
-				};
-				result.map(comment => {
-					localAverage.sentiments.asertividad += comment.sentiments.asertividad;
-					localAverage.sentiments['autoconciencia emocional'] +=
-						comment.sentiments['autoconciencia emocional'];
-					localAverage.sentiments['autocontrol emocional'] +=
-						comment.sentiments['autocontrol emocional'];
-					localAverage.sentiments['autoestima'] += comment.sentiments['autoestima'];
-					localAverage.sentiments['colaboración y cooperación'] +=
-						comment.sentiments['colaboración y cooperación'];
-					localAverage.sentiments['comprensión organizativa'] +=
-						comment.sentiments['comprensión organizativa'];
-					localAverage.sentiments['conciencia crítica'] +=
-						comment.sentiments['conciencia crítica'];
-					localAverage.sentiments['comunicacion asertiva'] +=
-						comment.sentiments['comunicacion asertiva'];
-					localAverage.sentiments['desarrollo de las relaciones'] +=
-						comment.sentiments['desarrollo de las relaciones'];
-					localAverage.sentiments['desarrollar y estimular a los demás'] +=
-						comment.sentiments['desarrollar y estimular a los demás'];
-					localAverage.sentiments.empatía += comment.sentiments.empatía;
-					localAverage.sentiments.influencia += comment.sentiments.influencia;
-					localAverage.sentiments.liderazgo += comment.sentiments.liderazgo;
-					localAverage.sentiments['manejo de conflictos'] +=
-						comment.sentiments['manejo de conflictos'];
-					localAverage.sentiments['motivación de logro'] +=
-						comment.sentiments['motivación de logro'];
-					localAverage.sentiments.optimismo += comment.sentiments.optimismo;
-					localAverage.sentiments['percepción y comprensión emocional'] +=
-						comment.sentiments['percepción y comprensión emocional'];
-					localAverage.sentiments['relación social'] +=
-						comment.sentiments['relación social'];
-					localAverage.sentiments['tolerancia a la frustración'] +=
-						comment.sentiments['tolerancia a la frustración'];
-					localAverage.sentiments.violencia += comment.sentiments.violencia;
-				});
-				this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map(
-					factor => {
-						return factor / result.length;
-					},
-				);
-				const ordered = Object.entries(localAverage.sentiments).map(entry => ({
-					name: entry[0],
-					value: entry[1] / result.length,
-				})) as NetworkAnalisis.Analysis;
-				const analysis = new AnalSentiment(this.actualId, ordered);
-				this.analysis = analysis.scale;
-				this.CE = analysis.CE;
-				this.AE = analysis.AE;
-				this.CS = analysis.CS;
-				this.RS = analysis.RS;
-				this.PEC = analysis.PEC;
-				this.SEC = analysis.SEC;
-				this.IE = analysis.IE;
-				this.loading = false;
-				this.step = 2;
-			})
-			.catch((error: ExtractorsPage.ErrorType) => {
-				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-			});
-	}
-	async obtainTelegramData(chat: ExtractorsPage.chatsTelegram) {
-		this.loading = true;
-		console.log(chat);
-		const body: ExtractorsPage.ExtractorData = {
-			id: this.actualId,
-			options: {
-				chatId: chat.id,
-				metaKey: chat.id.toString(),
-				limit: this.limitComments,
-				accessHash: chat.accessHash,
-				type: chat.type,
-			},
-		};
-		await this.fetchExtractor('http://localhost:8000/api/v1/extractors/obtain', body)
-			.then(data => {
-				const result: ExtractorsPage.ResultsObtain[] = data.data.data.result;
-				const localAverage: ExtractorsPage.ResultsObtain = {
-					input: {
-						content: 'Analisis',
-					},
-					sentiments: {
-						asertividad: 0,
-						'autoconciencia emocional': 0,
-						'autocontrol emocional': 0,
-						autoestima: 0,
-						'colaboración y cooperación': 0,
-						'comprensión organizativa': 0,
-						'conciencia crítica': 0,
-						'comunicacion asertiva': 0,
-						'desarrollo de las relaciones': 0,
-						'desarrollar y estimular a los demás': 0,
-						empatía: 0,
-						influencia: 0,
-						liderazgo: 0,
-						'manejo de conflictos': 0,
-						'motivación de logro': 0,
-						optimismo: 0,
-						'percepción y comprensión emocional': 0,
-						'relación social': 0,
-						'tolerancia a la frustración': 0,
-						violencia: 0,
-					},
-				};
-				result.map(comment => {
-					localAverage.sentiments.asertividad += comment.sentiments.asertividad;
-					localAverage.sentiments['autoconciencia emocional'] +=
-						comment.sentiments['autoconciencia emocional'];
-					localAverage.sentiments['autocontrol emocional'] +=
-						comment.sentiments['autocontrol emocional'];
-					localAverage.sentiments['autoestima'] += comment.sentiments['autoestima'];
-					localAverage.sentiments['colaboración y cooperación'] +=
-						comment.sentiments['colaboración y cooperación'];
-					localAverage.sentiments['comprensión organizativa'] +=
-						comment.sentiments['comprensión organizativa'];
-					localAverage.sentiments['conciencia crítica'] +=
-						comment.sentiments['conciencia crítica'];
-					localAverage.sentiments['comunicacion asertiva'] +=
-						comment.sentiments['comunicacion asertiva'];
-					localAverage.sentiments['desarrollo de las relaciones'] +=
-						comment.sentiments['desarrollo de las relaciones'];
-					localAverage.sentiments['desarrollar y estimular a los demás'] +=
-						comment.sentiments['desarrollar y estimular a los demás'];
-					localAverage.sentiments.empatía += comment.sentiments.empatía;
-					localAverage.sentiments.influencia += comment.sentiments.influencia;
-					localAverage.sentiments.liderazgo += comment.sentiments.liderazgo;
-					localAverage.sentiments['manejo de conflictos'] +=
-						comment.sentiments['manejo de conflictos'];
-					localAverage.sentiments['motivación de logro'] +=
-						comment.sentiments['motivación de logro'];
-					localAverage.sentiments.optimismo += comment.sentiments.optimismo;
-					localAverage.sentiments['percepción y comprensión emocional'] +=
-						comment.sentiments['percepción y comprensión emocional'];
-					localAverage.sentiments['relación social'] +=
-						comment.sentiments['relación social'];
-					localAverage.sentiments['tolerancia a la frustración'] +=
-						comment.sentiments['tolerancia a la frustración'];
-					localAverage.sentiments.violencia += comment.sentiments.violencia;
-				});
-				this.dataChart.datasets[0].data = Object.values(localAverage.sentiments).map(
-					factor => {
-						return factor / result.length;
-					},
-				);
-				const ordered = Object.entries(localAverage.sentiments).map(entry => ({
-					name: entry[0],
-					value: entry[1] / result.length,
-				})) as NetworkAnalisis.Analysis;
-				const analysis = new AnalSentiment(this.actualId, ordered);
-				this.analysis = analysis.scale;
-				this.CE = analysis.CE;
-				this.AE = analysis.AE;
-				this.CS = analysis.CS;
-				this.RS = analysis.RS;
-				this.PEC = analysis.PEC;
-				this.SEC = analysis.SEC;
-				this.IE = analysis.IE;
-				this.loading = false;
-				this.step = 2;
-			})
-			.catch((error: ExtractorsPage.ErrorType) => {
-				this.$q.notify({ type: 'negative', message: `Error: ${error.message}.` });
-			});
+		await api.$extractors.obtain(id,requestC).then((response) => {
+			if (!response.ok || !response.data){
+				throw new CustomError(
+					response.type as ApiService.ErrorType,
+					response.message,
+				)
+			}
+			const sentiments = this.getSentimentsMetaKey(response.data.data.result)
+			const ordered = Object.entries(sentiments)
+			.map(entry => ({
+				name: entry[0],
+				value: entry[1] / response.data.data.result.length,
+			})) as NetworkAnalisis.Analysis;
+			const analysis = new AnalSentiment(id, ordered);
+			this.analysis = analysis.scale;
+			this.CE = analysis.CE;
+			this.AE = analysis.AE;
+			this.CS = analysis.CS;
+			this.RS = analysis.RS;
+			this.PEC = analysis.PEC;
+			this.SEC = analysis.SEC;
+			this.IE = analysis.IE;
+			this.step = 2
+			
+		})
+		this.loading = false;
+		this.loader.show = false;
+		this.chartData()
+		await this.$nextTick();
+		const chart = this.$refs['chart2'] as barChart;
+		chart.init();
 	}
 	@Watch('codeConfirmation')
 	onChangeCodeConfirmation(c: string) {
@@ -474,13 +393,6 @@ export default class ExtractorsPage extends Vue {
 	}
 }
 export namespace ExtractorsPage {
-	export interface Extractor {
-		name: string;
-		version: string;
-		id: string;
-		icon: string;
-		color: string;
-	}
 	export interface Factors {
 		label: string;
 		data: number[];
@@ -488,11 +400,6 @@ export namespace ExtractorsPage {
 	export interface DataChart {
 		labels: string[];
 		datasets: ExtractorsPage.Factors[];
-	}
-	export interface Indicator {
-		title: string;
-		subtitle?: string;
-		value: number;
 	}
 	export interface ExtractorData {
 		id: string;
@@ -546,7 +453,7 @@ export namespace ExtractorsPage {
 	export interface chatsTelegram {
 		id: number;
 		accessHash: string;
-		type: string;
+		type: 'user' | 'group' | 'channel';
 		name: string;
 		icon?: string;
 	}

@@ -15,6 +15,7 @@ const routes: RouteConfig[] = [
 			{ path: 'stats', name: 'stats', component: () => import('pages/stats') },
 			{ path: 'database', name: 'database', component: () => import('pages/database') },
 			{ path: 'results', name: 'results', component: () => import('pages/results') },
+			{ path: 'search', name:'search', component: () => import ('pages/search') },
 		],
 	},
 	// Always leave this as last one,

@@ -36,7 +36,7 @@ export class Extractors extends ApiService {
 }
 export namespace Extractors {
 	export namespace List {
-		export type Response = Record<'id' | 'name' | 'version' | 'extractorVersion', string>[];
+		export type Response = Record<'id' | 'name' | 'version' | 'extractorVersion'| 'icon' | 'color', string>[];
 	}
 	export namespace Deploy {
 		interface TwitterConfig {
@@ -47,7 +47,7 @@ export namespace Extractors {
 			apiKey: string;
 		}
 		interface telegramConfig {
-			apiId: string;
+			apiId: number;
 			apiHash: string;
 		}
 		interface telegramOptions {
@@ -66,7 +66,7 @@ export namespace Extractors {
 			: T extends 'telegram-extractor'
 			? { config: telegramConfig; options: telegramOptions }
 			: T extends 'emol-extractor'
-			? never
+			? { config: unknown}
 			: never;
 		export type Response<T extends extractor> = T extends 'telegram-extractor'
 			? {
@@ -75,6 +75,12 @@ export namespace Extractors {
 						type: string;
 						message: string;
 						codeHash: string;
+						chats?: {
+							id: number,
+							accessHash: string,
+							name: string,
+							type: 'user' | 'group' | 'channel' 
+						}[]
 					};
 			  }
 			: {

@@ -119,7 +119,7 @@
 													color="primary"
 													size="md"
 													icon="mdi-send"
-													@click="onClickExtractor('telegram-extractor')"
+													@click="validateTelegram('telegram-extractor')"
 												/>
 											</div>
 										</div>
@@ -135,7 +135,7 @@
 										v-model="metakey"
 										:key="index"
 										:disable="loading"
-										@click="obtainTelegramData(chat)"
+										@click="obtainExtractorData('telegram-extractor', chat)"
 									>
 										<q-item-section avatar>
 											<q-icon size="md" :name="chat.icon" />
@@ -169,7 +169,7 @@
 									color="primary"
 									size="md"
 									icon="mdi-send"
-									@click="obtainExtractorData()"
+									@click="obtainExtractorData('youtube-extractor')"
 								/>
 							</div>
 						</div>
@@ -193,7 +193,7 @@
 									color="primary"
 									size="md"
 									icon="mdi-send"
-									@click="obtainExtractorData()"
+									@click="obtainExtractorData('reddit-extractor')"
 								/>
 							</div>
 						</div>
@@ -216,7 +216,7 @@
 									color="primary"
 									size="md"
 									icon="mdi-send"
-									@click="obtainExtractorData()"
+									@click="obtainExtractorData('twitter-extractor')"
 								/>
 							</div>
 						</div>
@@ -239,7 +239,7 @@
 									color="primary"
 									size="md"
 									icon="mdi-send"
-									@click="obtainExtractorData()"
+									@click="obtainExtractorData('emol-extractor')"
 								/>
 							</div>
 						</div>
@@ -250,7 +250,7 @@
 								<q-card flat bordered class="col-12 q-mt-sm q-mb-xs">
 									<div class="row justify-center content-center full-height">
 										<div class="text-center">
-											<div class="text-h5 ">{{IE}}%</div>
+											<div class="text-h5 ">{{ IE }}%</div>
 											<div
 												class="text-caption
 					"
@@ -268,7 +268,7 @@
 													class="text-h6 text-weight-regular
 					"
 												>
-													{{PEC}}%
+													{{ PEC }}%
 												</div>
 												<div
 													class="text-caption
@@ -288,7 +288,7 @@
 													class="text-h6 text-weight-regular
 					"
 												>
-													{{SEC}}%
+													{{ SEC }}%
 												</div>
 												<div
 													class="text-caption
@@ -304,7 +304,7 @@
 									<q-card flat bordered>
 										<div class="row justify-center content-center full-height">
 											<div class="text-center">
-												<div class="text-subtitle1">{{CE}}%</div>
+												<div class="text-subtitle1">{{ CE }}%</div>
 												<div
 													class="text-caption
 					"
@@ -319,7 +319,7 @@
 									<q-card flat bordered>
 										<div class="row justify-center content-center full-height">
 											<div class="text-center">
-												<div class="text-subtitle1">{{AE}}%</div>
+												<div class="text-subtitle1">{{ AE }}%</div>
 												<div
 													class="text-caption
 					"
@@ -334,7 +334,7 @@
 									<q-card flat bordered>
 										<div class="row justify-center content-center full-height">
 											<div class="text-center">
-												<div class="text-subtitle1">{{CS}}%</div>
+												<div class="text-subtitle1">{{ CS }}%</div>
 												<div
 													class="text-caption
 					"
@@ -350,10 +350,7 @@
 										<div class="row justify-center content-center full-height">
 											<div class="text-center">
 												<div class="text-subtitle1">{{ RS }}%</div>
-												<div
-													class="text-caption
-					"
-												>
+												<div class="text-caption">
 													Regulación Emocional Social
 												</div>
 											</div>
@@ -361,14 +358,13 @@
 									</q-card>
 								</div>
 							</div>
-						</div>
-						<div class="chart-container">
-							<chart-c
-								class=""
-								type="bar"
-								:label="dataChart.datasets[0].label"
-								:data="dataChart.datasets[0].data"
-								:labels="dataChart.labels"
+							<bar-chart
+								ref="chart2"
+								width="100%"
+								height="400px"
+								:data="data"
+								:labels="labels"
+								:colors="[]"
 							/>
 						</div>
 					</q-step>
@@ -412,10 +408,5 @@
 }
 .canvas {
 	border: 1px dotted primary;
-}
-.chart-container {
-	position: relative;
-	height: 60vh;
-	width: 100%;
 }
 </style>

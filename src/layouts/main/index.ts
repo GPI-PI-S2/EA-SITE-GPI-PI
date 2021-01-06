@@ -11,8 +11,10 @@ export default class MainLayout extends Vue {
 		{ name: 'Explorar', icon: 'mdi-database-search', to: { name: 'database' } },
 		{ name: 'Extractores', icon: 'mdi-download-multiple', to: { name: 'extractors' } },
 		{ name: 'Base de datos', icon: 'mdi-database-settings', to: { name: 'stats' } },
+		{ name: 'Search', icon:'mdi-magnify', to: {name: 'search'} },
 		{ name: 'Ajustes', icon: 'mdi-cog', to: { name: 'settings' } },
 		{ name: 'Sobre la app', icon: 'mdi-information', to: { name: 'about' } },
+		
 	]);
 	@Provide() loader: MainLayout.Loader = { message: 'Cargando', show: false };
 	@Watch('$route.name')
